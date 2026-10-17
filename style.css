@@ -1,0 +1,667 @@
+/* ==========================================
+   ГЛОБАЛЬНЫЙ СКРОЛЛБАР ОКНА БРАУЗЕРА (PIP-BUCK)
+   ========================================== */
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+    width: 10px !important;  
+    height: 10px !important; 
+}
+
+html::-webkit-scrollbar-track,
+body::-webkit-scrollbar-track {
+    background: #110e0d !important; 
+    border-left: 1px solid #241b15 !important;
+}
+
+html::-webkit-scrollbar-thumb,
+body::-webkit-scrollbar-thumb {
+    background: #423025 !important; 
+    border: 2px solid #110e0d !important; 
+    border-radius: 5px !important;
+}
+
+html::-webkit-scrollbar-thumb:hover,
+body::-webkit-scrollbar-thumb:hover {
+    background: #8c431d !important; 
+}
+
+html {
+    scrollbar-width: thin !important;
+    scrollbar-color: #423025 #110e0d !important;
+}
+
+body {
+    background-color: #161210 !important;
+    background-image: radial-gradient(circle at 50% 50%, #241a15 0%, #110e0d 100%) !important;
+    color: #ded5cd !important;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+}
+
+
+.navbar {
+    background: linear-gradient(180deg, #2b211b 0%, #1c1511 100%);
+    border-bottom: 3px solid #54311f;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    width: 100%;
+}
+
+/* ==========================================
+   УМНАЯ ГИБКАЯ НАВИГАЦИОННАЯ ПАНЕЛЬ
+   ========================================== */
+.navbar .nav-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 24px !important; 
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important; 
+    height: 64px !important;
+    box-sizing: border-box !important;
+    flex-wrap: nowrap !important;
+    gap: 20px !important;
+}
+
+.navbar .menu {
+    display: flex !important;
+    align-items: center !important;
+    height: 100% !important;
+    gap: 10px !important;
+    flex-shrink: 0 !important; 
+    margin-left: auto !important; 
+}
+
+.navbar .logo {
+    display: flex !important;
+    align-items: center !important;
+    gap: 16px !important; 
+    height: 100% !important;
+    font-size: 24px !important;
+    font-weight: 800 !important;
+    color: #ff6600;
+    text-shadow: 0 0 8px rgba(255, 102, 0, 0.6), 2px 2px 2px #000;
+    flex-shrink: 1 !important; 
+    min-width: 0; 
+    white-space: nowrap;
+}
+
+.logo-img {
+    height: 100% !important;      
+    max-height: 64px !important;   
+    width: auto !important;        
+    object-fit: cover !important;  
+    flex-shrink: 0 !important; 
+    margin: 0 !important;
+}
+
+.main-content {
+    max-width: 1400px; 
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #3a251c;
+    box-sizing: border-box;
+    gap: 20px;
+}
+
+.section-header .section-title {
+    margin: 0 !important;
+    font-size: 28px !important;
+    font-weight: 800;
+    color: #e67322;
+    border-left: 6px solid #8c431d;
+    padding-left: 18px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+    white-space: nowrap;
+}
+
+.section-header .toggle-btn {
+    margin: 0 !important;
+    padding: 8px 16px !important;
+    font-size: 14px !important;
+    white-space: nowrap;
+    background: linear-gradient(180deg, #2b211b 0%, #1c1511 100%);
+    color: #ff944d;
+    border: 1px solid #54311f;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+}
+/* ==========================================
+   РЕЖИМ ПЛИТКИ
+   ========================================== */
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+    gap: 30px;
+}
+
+.grid-container:not(.list-mode) .card, 
+.grid-container:not(.list-mode) .lineage-card {
+    background: linear-gradient(145deg, #241b15 0%, #18120e 100%);
+    border: 2px solid #423025;
+    border-top: 2px solid #6e4631;
+    border-radius: 8px;
+    padding: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-start !important;
+    box-shadow: inset 0 0 20px rgba(0,0,0,0.6), 0 10px 20px rgba(0,0,0,0.7);
+    transition: transform 0.2s, border-color 0.2s;
+    height: auto !important;       
+    min-height: 250px !important;   
+    max-height: 560px !important;   
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+    position: relative !important;
+}
+
+.grid-container:not(.list-mode) .card-main-content, 
+.grid-container:not(.list-mode) .lineage-info {
+    height: auto !important;       
+    max-height: 435px !important;   
+    width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    padding: 16px 16px 0 16px !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+    position: relative !important;
+    flex-grow: 1 !important;        
+}
+
+.grid-container:not(.list-mode) .card:hover, 
+.grid-container:not(.list-mode) .lineage-card:hover {
+    border-color: #8c431d;
+    transform: translateY(-3px);
+}
+
+.card-title-header {
+    background: linear-gradient(180deg, #1f1712 0%, #150f0c 100%);
+    border-bottom: 2px solid #423025;
+    border-top: 1px solid #54311f;
+    padding: 10px 16px;
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+}
+
+.card-title-header .card-title {
+    font-size: 20px !important;
+    font-weight: 800;
+    color: #ff802b !important; 
+    margin: 0 !important;
+    text-shadow: 1px 1px 2px #000;
+    line-height: 1.3 !important;
+}
+
+.grid-container:not(.list-mode) .card-main-content .card-title,
+.grid-container:not(.list-mode) .lineage-info .card-title {
+    display: none !important;
+}
+
+.grid-container:not(.list-mode) .image-box {
+    height: 180px !important;
+    min-height: 180px !important;
+    max-height: 180px !important;
+    margin-bottom: 12px !important;
+    width: 100% !important;
+    flex-shrink: 0 !important;
+    background-color: #0d0a08;
+    border: 2px solid #423025;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.grid-container:not(.list-mode) .image-box img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+/* ==========================================
+   ОБНОВЛЕННЫЙ КОНТЕЙНЕР ТЕГОВ (2 СТРОКИ + СКРОЛЛ)
+   ========================================== */
+.card-tags {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: wrap !important; 
+    gap: 6px !important;
+    padding: 0 4px 0 0 !important;
+    width: 100% !important;
+    max-height: 76px !important; 
+    overflow-y: auto !important;  
+    overflow-x: hidden !important;
+    box-sizing: border-box !important;
+    flex-shrink: 0 !important;
+}
+
+.grid-container:not(.list-mode) .card-tags {
+    margin: 0 0 6px 0 !important; 
+    height: auto !important;
+    min-height: 32px !important;
+}
+
+.tag {
+    background-color: #3d1b0b !important;
+    color: #ff8040 !important;
+    border: 1px solid #6e2d0f !important;
+    font-size: 13px !important;
+    padding: 4px 12px !important;
+    border-radius: 4px !important;
+    font-weight: 700 !important;
+    display: inline-block !important;
+    white-space: nowrap !important;
+    margin-bottom: 2px !important;
+}
+
+/* АДАПТИВНЫЙ СКРОЛЛ-БОКС ОПИСАНИЯ В ПЛИТКЕ */
+.grid-container:not(.list-mode) .text-scroll-box {
+    display: block !important;
+    width: 100% !important;
+    flex-grow: 1 !important;       
+    height: 160px !important;       
+    max-height: 160px !important;   
+    margin: 0 0 14px 0 !important;  
+    padding-right: 8px !important;
+    box-sizing: border-box !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;    
+}
+
+/* ПЛАШКА БОНУСОВ ПЛИТКИ */
+.grid-container:not(.list-mode) .sub-info {
+    position: relative !important;
+    bottom: auto !important; 
+    left: auto !important;
+    width: calc(100% - 32px) !important; 
+    margin: 0 auto 12px auto !important; 
+    height: 90px !important;      
+    min-height: 90px !important;
+    max-height: 90px !important;
+    flex-shrink: 0 !important;       
+    overflow-y: auto !important;  
+    box-sizing: border-box !important;
+    color: #ffb366;
+    background-color: #1c1410;
+    border: 1px dashed #54311f;
+    padding: 10px 14px !important;
+    border-radius: 4px;
+    font-weight: 700;
+}
+
+.card-desc {
+    color: #ded5cd;
+    font-size: 16px;
+    line-height: 1.6;
+    margin: 0;
+    white-space: pre-line; 
+}
+
+
+/* ==========================================
+   РЕЖИМ СПИСКА
+   ========================================== */
+.grid-container.list-mode {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* ==========================================
+   АДАПТИВНАЯ ВЫСОТА КАРТОЧЕК В РЕЖИМЕ СПИСКА
+   ========================================== */
+.grid-container.list-mode .card,
+.grid-container.list-mode .lineage-card {
+    display: flex !important;
+    flex-direction: column !important; 
+    height: auto !important; 
+    min-height: 180px !important;
+    max-height: 320px !important; 
+    background: linear-gradient(145deg, #241b15 0%, #18120e 100%);
+    border: 2px solid #423025;
+    border-top: 2px solid #6e4631;
+    border-radius: 8px;
+    padding: 0 !important;
+    box-shadow: inset 0 0 20px rgba(0,0,0,0.6), 0 10px 20px rgba(0,0,0,0.7);
+    box-sizing: border-box;
+    overflow: hidden !important;
+}
+
+.grid-container.list-mode .lineage-info,
+.grid-container.list-mode .card-main-content {
+    height: auto !important;
+    max-height: 260px !important; 
+}
+
+.grid-container.list-mode .image-box {
+    align-self: flex-start !important; 
+}
+
+.grid-container.list-mode .sub-info {
+    height: auto !important;
+    max-height: 220px !important; 
+}
+
+.grid-container.list-mode .card-title-header {
+    display: flex !important;
+    width: 100% !important;
+    min-width: 100% !important;
+    height: auto !important;
+    border-bottom: 2px solid #423025 !important;
+    background: linear-gradient(180deg, #1f1712 0%, #150f0c 100%) !important;
+    padding: 10px 16px !important;
+    flex-shrink: 0 !important;
+}
+
+.grid-container.list-mode .lineage-info {
+    display: grid !important;
+    grid-template-columns: 140px 1fr 280px !important; 
+    align-items: stretch !important;
+    justify-content: start !important;
+    width: 100% !important;
+    height: 100% !important;
+    padding: 15px 20px !important;
+    gap: 20px !important;
+    box-sizing: border-box !important;
+    overflow: visible !important; 
+}
+
+.grid-container.list-mode .card-main-content {
+    display: grid !important;
+    grid-template-columns: 1fr 280px !important;
+    align-items: stretch !important;
+    justify-content: start !important;
+    width: 100% !important;
+    height: 100% !important;
+    padding: 15px 20px !important;
+    gap: 20px !important;
+    box-sizing: border-box !important;
+    overflow: visible !important; 
+}
+
+.grid-container.list-mode .image-box {
+    width: 140px !important;
+    height: 140px !important;
+    min-width: 140px !important;
+    max-width: 140px !important;
+    flex-shrink: 0 !important;
+    margin: 0 !important;
+    background-color: #0d0a08 !important;
+    border: 2px solid #423025 !important;
+    border-radius: 6px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    overflow: hidden !important;
+}
+
+.grid-container.list-mode .image-box img {
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 140px !important;
+    max-height: 140px !important;
+    object-fit: cover !important; 
+}
+
+.grid-container.list-mode .text-scroll-box {
+    grid-column: unset !important;
+    width: 100% !important;
+    height: auto !important;
+    margin: 0 !important;
+    display: block !important;
+    padding-right: 8px !important; 
+    box-sizing: border-box !important;
+}
+
+.grid-container.list-mode .card-tags {
+    margin: 8px 0 0 0 !important;
+}
+
+.grid-container.list-mode .sub-info {
+    position: static !important;
+    grid-column: unset !important;
+    width: 280px !important;
+    min-width: 280px !important; 
+    max-width: 280px !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+    height: 140px !important; 
+    max-height: 140px !important;
+    overflow-y: auto !important; 
+    color: #ffb366;
+    background-color: #1c1410;
+    border: 1px dashed #54311f;
+    padding: 10px 14px !important; 
+    border-radius: 4px;
+    font-weight: 700;
+}
+
+/* ==========================================
+   ПОЛНОЕ ДОСЬЕ (ОТДЕЛЬНАЯ СТРАНИЦА)
+   ========================================== */
+.single-page-layout {
+    width: 100%;
+    height: auto; 
+    min-height: 500px;
+    background: linear-gradient(145deg, #1d1612 0%, #130f0c 100%);
+    border: 2px solid #54311f;
+    border-radius: 8px;
+    padding: 40px;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.9);
+    box-sizing: border-box;
+    display: block; 
+}
+
+.single-page-back-box { margin-bottom: 35px; width: 100%; }
+.single-page-content { display: flex; gap: 50px; flex-wrap: wrap; align-items: flex-start; width: 100%; height: auto; }
+.single-page-image {
+    flex: 0 0 400px; width: 400px; height: 400px; background-color: #0d0a08; border: 2px solid #423025;
+    border-radius: 8px; display: flex; align-items: center; justify-content: center; overflow: hidden; box-sizing: border-box;
+}
+.single-page-image img { max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; }
+.single-page-info { flex: 1; min-width: 320px; height: auto; display: flex; flex-direction: column; }
+.single-page-info .card-desc { height: auto; overflow: visible; margin-bottom: 25px; }
+.single-page-info .sub-info {
+    position: static; margin-top: 20px; align-self: flex-start; color: #ffb366;
+    background-color: #1c1410; border: 1px dashed #54311f; padding: 10px 14px; border-radius: 4px; font-weight: 700;
+}
+
+.image-box img, 
+.single-page-image img,
+.grid-container.list-mode .image-box img {
+    filter: sepia(0.05) brightness(0.9) contrast(1.05) !important;
+}
+
+/* ==========================================
+   ИЗОЛЯЦИЯ ТОНКИХ ВНУТРЕННИХ СКРОЛЛБАРОВ
+   ========================================== */
+.text-scroll-box::-webkit-scrollbar,
+.grid-container .sub-info::-webkit-scrollbar,
+.card-tags::-webkit-scrollbar {
+    width: 4px !important;   
+    height: 4px !important;  
+}
+.text-scroll-box::-webkit-scrollbar-track,
+.grid-container .sub-info::-webkit-scrollbar-track,
+.card-tags::-webkit-scrollbar-track {
+    background: #110e0d !important;
+}
+.text-scroll-box::-webkit-scrollbar-thumb,
+.grid-container .sub-info::-webkit-scrollbar-thumb,
+.card-tags::-webkit-scrollbar-thumb {
+    background: #423025 !important;
+    border-radius: 2px !important;
+}
+.text-scroll-box:hover::-webkit-scrollbar-thumb,
+.grid-container .sub-info:hover::-webkit-scrollbar-thumb,
+.card-tags:hover::-webkit-scrollbar-thumb {
+    background: #8c431d !important;
+}
+
+
+.image-box img, 
+.single-page-image img,
+.grid-container.list-mode .image-box img {
+    filter: sepia(0.05) brightness(0.9) contrast(1.05) !important;
+}
+
+/* ==========================================
+   МНОГОСТУПЕНЧАТАЯ УМНАЯ АДАПТИВНОСТЬ ШАПКИ
+   ========================================== */
+.nav-btn .btn-text-short { display: none !important; }
+.nav-btn .btn-text-full { display: inline !important; }
+
+@media (max-width: 1150px) {
+    .navbar .nav-container { gap: 12px !important; }
+    .navbar .menu { gap: 6px !important; }
+    .nav-btn { padding: 6px 10px !important; font-size: 13px !important; }
+}
+
+@media (max-width: 950px) {
+    .navbar .logo { font-size: 18px !important; }
+}
+
+@media (max-width: 820px) {
+    .nav-btn .btn-text-full { display: none !important; }
+    .nav-btn .btn-text-short { display: inline !important; }
+    .navbar .nav-container { padding: 0 12px !important; gap: 8px !important; }
+    .navbar .menu { gap: 4px !important; }
+    .nav-btn { padding: 6px 8px !important; font-size: 12px !important; }
+    .single-page-image { flex: 0 0 100% !important; width: 100% !important; max-width: 100% !important; height: 300px !important; }
+}
+
+@media (max-width: 768px) {
+    .section-header { flex-direction: column !important; align-items: flex-start !important; gap: 12px !important; }
+    .section-header .toggle-btn .toggle-btn-text { display: none !important; }
+    .section-header .toggle-btn { padding: 8px 12px !important; justify-content: center !important; min-width: 40px !important; }
+}
+
+@media (max-width: 600px) {
+    .navbar .logo { font-size: 0 !important; }
+    .logo-img { max-height: 48px !important; }
+}
+
+/* ==========================================
+   УМНАЯ МОБИЛЬНАЯ АДАПТАЦИЯ РЕЖИМА СПИСКА
+   ========================================== */
+.grid-container.list-mode .lineage-info.no-bonus-mode {
+    grid-template-columns: 140px 1fr !important;
+}
+.grid-container.list-mode .card-main-content.no-bonus-mode {
+    grid-template-columns: 1fr !important;
+}
+
+@media (max-width: 768px) {
+    .grid-container.list-mode .card,
+    .grid-container.list-mode .lineage-card {
+        max-height: none !important; 
+        height: auto !important;
+    }
+    .grid-container.list-mode .lineage-info,
+    .grid-container.list-mode .card-main-content {
+        display: flex !important;
+        flex-direction: column !important; 
+        height: auto !important;
+        max-height: none !important;
+        gap: 16px !important;
+        padding: 16px !important;
+    }
+    .grid-container.list-mode .image-box {
+        align-self: center !important;
+        width: 120px !important;
+        height: 120px !important;
+        min-width: 120px !important;
+    }
+    .grid-container.list-mode .sub-info {
+        width: 100% !important;
+        min-width: 100% !important;
+        max-width: 100% !important;
+        height: auto !important;
+        max-height: 160px !important; 
+    }
+    .grid-container.list-mode .text-scroll-box {
+        max-height: 200px !important; 
+        overflow-y: auto !important;
+    }
+}
+
+/* ==========================================
+   АДАПТИВНОЕ СЖАТИЕ КНОПКИ РЕЖИМА ДО ЗНАЧКА
+   ========================================== */
+/* На мобильных экранах полностью прячем текст, оставляя только иконку-смайл */
+@media (max-width: 768px) {
+    .section-header .toggle-btn .toggle-btn-text {
+        display: none !important;
+    }
+    .section-header .toggle-btn {
+        padding: 8px 12px !important; /* Делаем кнопку компактным аккуратным квадратом */
+        justify-content: center !important;
+        min-width: 40px !important;
+    }
+}
+/* ==========================================
+   ФИКС КНОПОК МЕНЮ: ПРИНУДИТЕЛЬНЫЙ ГРАДИЕНТ PIP-BUCK
+   ========================================== */
+.navbar .menu .nav-btn {
+    background: linear-gradient(135deg, #3d2e24 0%, #241b15 100%) !important;
+    color: #ded5cd !important;
+    border: 2px solid #54311f !important;
+    padding: 8px 16px !important;
+    border-radius: 6px !important;
+    cursor: pointer !important;
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    text-shadow: 1px 1px 2px #000 !important;
+    transition: all 0.25s ease !important;
+    white-space: nowrap !important;
+    display: inline-block !important;
+}
+
+.navbar .menu .nav-btn:hover, 
+.navbar .menu .nav-btn.active {
+    color: #fff !important;
+    background: linear-gradient(135deg, #8c431d 0%, #4a200c 100%) !important;
+    border-color: #ff6600 !important;
+    box-shadow: 0 0 12px rgba(255, 102, 0, 0.5) !important;
+}
+/* ==========================================
+   ФИКС СКРОЛЛБАРОВ: ГЛОБАЛЬНЫЙ ЗАЖИМ 4PX ДЛЯ ВСЕХ ВНУТРЕННИХ БЛОКОВ
+   ========================================== */
+/* Задаем жесткие 4px для абсолютно всех внутренних элементов, кроме самого окна браузера */
+:not(html):not(body)::-webkit-scrollbar {
+    width: 4px !important;   /* Вертикальные скроллы внутри карточек */
+    height: 4px !important;  /* Горизонтальные скроллы внутри карточек */
+}
+
+:not(html):not(body)::-webkit-scrollbar-track {
+    background: #110e0d !important;
+}
+
+:not(html):not(body)::-webkit-scrollbar-thumb {
+    background: #423025 !important;
+    border-radius: 2px !important;
+}
+
+:not(html):not(body)::-webkit-scrollbar-thumb:hover {
+    background: #8c431d !important;
+}
