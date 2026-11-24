@@ -1,1 +1,2045 @@
 
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>[ПИП-БАК 3000]</title>
+<style>
+:root{
+  --bg:#030804;--panel:#071409;--box:#0a1e0e;
+  --g:#39ff5a;--gd:#196b27;--glow:rgba(57,255,90,.25);
+  --amb:#ff9900;--red:#ff4444;
+}
+*{
+  box-sizing:border-box;margin:0;padding:0;
+  font-family:'Segoe UI Mono','DejaVu Sans Mono','Liberation Mono',Consolas,monospace;
+  font-weight:500;font-synthesis:none;min-width:0;
+  letter-spacing:1.2px;
+}
+html,body{
+  height:100dvh;overflow:hidden;background:#090807;color:var(--g);
+  font-size:16px;line-height:1.45;
+}
+body{
+  display:flex;align-items:center;justify-content:center;
+  text-shadow:none;
+}
+
+.ttl{
+  font-size:.96rem;font-weight:700;letter-spacing:1.8px;
+  color:var(--g);background:var(--box);
+  border:1px solid var(--gd);border-left:5px solid var(--g);border-bottom:1px solid var(--g);
+  padding:6px 10px;margin-bottom:10px;
+  display:flex;justify-content:space-between;align-items:center;gap:6px;flex-wrap:wrap;
+  box-shadow:inset 0 0 12px var(--glow);
+}
+
+.pill small{
+  font-size:.72rem;font-weight:700;letter-spacing:1.5px;opacity:.85;text-transform:uppercase;
+}
+.pill b{
+  font-size:.96rem;
+  font-weight:500;
+  letter-spacing:2px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  display:block;
+}
+
+button{
+  letter-spacing:1.3px;font-weight:700;
+}
+.sk-mod input,.base-in{
+  font-weight:700;letter-spacing:.5px;
+}
+
+.pb-case{
+  width:100%;max-width:1280px;height:100dvh;
+  display:flex;flex-direction:column;gap:5px;padding:6px 8px;
+  border:3px solid #3b3730;border-radius:14px;position:relative;
+  background:
+    radial-gradient(circle at 10% 10%,rgba(255,250,240,.35),transparent 40%),
+    linear-gradient(165deg,#b8b0a0 0%,#9c9484 40%,#80796b 78%,#635d52 100%);
+  box-shadow:inset 0 1px 2px rgba(255,255,255,.55),inset 0 -3px 8px rgba(40,36,30,.75);
+}
+
+
+.screw{
+  width:14px;height:14px;border-radius:50%;flex-shrink:0;position:relative;
+  background:radial-gradient(circle at 35% 35%,#948573 0%,#4a4137 55%,#1f1b17 100%);
+  border:1.5px solid #0d0b09;
+  box-shadow:0 2px 4px rgba(0,0,0,.95),inset 0 1px 1px rgba(255,220,180,.35),0 0 4px rgba(130,55,18,.5);
+}
+.top-deck,.bottom-deck{
+  display:flex;justify-content:space-between;align-items:center;gap:6px;flex-shrink:0;
+  background:linear-gradient(180deg,#7a7366,#544f46);
+  border:1.5px solid #36322c;border-radius:8px;padding:4px 8px;
+  box-shadow:inset 0 1px 1px rgba(255,255,255,.25),0 2px 5px rgba(0,0,0,.65);
+}
+.rust-plate{
+  background:linear-gradient(180deg,#d6cfc2,#9e9689);
+  border:1.5px solid #4a453d;border-radius:4px;padding:2px 8px;color:#24211c;
+  font-weight:700;font-size:.75rem;letter-spacing:1.2px;text-shadow:none;
+  display:inline-flex;align-items:center;gap:6px;white-space:nowrap;
+}
+.model-tag{
+  font-size:.62rem;color:#ebe5d8;background:#3b3730;
+  padding:1px 6px;border:1px solid #24211c;border-radius:3px;font-weight:700;
+}
+
+/* Единая обойма для верхних и нижних кнопок */
+.switch-bank,.rocker-bank{
+  display:flex;gap:3px;align-items:center;
+  background:linear-gradient(180deg,#2b2620,#1c1814);
+  border:1px solid #0e0c0a;border-top-color:#574d41;
+  border-radius:5px;padding:1.5px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.15),0 2px 4px rgba(0,0,0,.65);
+}
+
+/* Ячейки под клавиши */
+.top-slot,.rocker-slot{
+  height:25px;background:transparent;padding:0;border-radius:3px;
+  border:none;box-shadow:none;
+  display:flex;flex-shrink:0;
+}
+
+/* Размеры слотов */
+#slot-json{width:auto}
+#slot-lk{width:38px}
+#slot-rst{width:76px}
+.rocker-slot{width:78px}
+#btn-json,#lk-rst,#btn-rst{width:100%!important;padding:0 7px!important;justify-content:space-between!important;gap:7px}
+#lk-rst{padding:0 5px!important;gap:4px}
+
+/* Единый стиль скошенных клавиш-тумблеров для верха (.hw-btn) и низа (.rocker-btn) */
+.hw-btn,.rocker-btn{
+  width:100%;height:100%;border-radius:3px;cursor:pointer;position:relative;
+  display:flex;align-items:center;justify-content:space-between;padding:0 8px;gap:8px;
+  background:var(--rocker-bg)!important;
+  border:1px solid var(--btn-brd)!important;border-right-color:#7d6d5c!important;
+  box-shadow:inset 3px 0 5px rgba(0,0,0,.85),-2px 0 4px rgba(0,0,0,.6);
+  color:var(--btn-txt)!important;font-size:.62rem;font-weight:700;letter-spacing:.5px;
+  text-shadow:0 -1px 0 #000;transition:all .14s ease;white-space:nowrap;
+}
+.hw-btn{font-size:.58rem;letter-spacing:.3px;padding:0 7px}
+
+/* Сами светодиодные прорези на всех кнопках (в покое погашены) */
+.hw-btn::after,.rocker-btn::after{
+  content:'';width:4px;height:14px;border-radius:1.5px;flex-shrink:0;
+  background:#141210;border:1px solid #090807;box-shadow:inset 0 1px 2px #000;
+  transition:all .14s ease;
+}
+
+/* Подсветка лампочки при наведении мыши */
+.hw-btn:hover:not(:disabled)::after,.rocker-btn:hover:not(:disabled)::after{
+  background:var(--rocker-lit)!important;border-color:#ffffff!important;
+  box-shadow:0 0 6px var(--rocker-lit)!important;
+}
+
+/* Перекинутое (включённое) состояние для всех клавиш */
+.hw-btn.on,.hw-btn.on:hover:not(:disabled),
+.hw-btn.warn,.hw-btn.warn:hover:not(:disabled),
+.rocker-btn.lit,.rocker-btn.lit:hover:not(:disabled){
+  background:var(--rocker-lit-bg)!important;
+  border-right-color:#0d0b09!important;border-left-color:#857462!important;
+  box-shadow:inset -3px 0 6px rgba(0,0,0,.9),2px 0 4px rgba(0,0,0,.6);
+  color:var(--btn-txt)!important;
+}
+.hw-btn.on::after,.hw-btn.warn::after,.rocker-btn.lit::after{
+  background:var(--rocker-lit)!important;border-color:#ffffff!important;
+  box-shadow:0 0 8px var(--rocker-lit),0 0 14px var(--rocker-lit)!important;
+}
+
+.mid-deck{
+  flex:1;min-height:0;display:flex;align-items:center;gap:6px;
+}
+
+.wheel-housing{
+  width:22px;height:106px;flex-shrink:0;
+  background:#1c1814;
+  border:1.5px solid #090806;
+  border-right-color:rgba(255,225,185,.25);
+  border-radius:11px;padding:1.5px;
+  box-shadow:0 2px 5px rgba(0,0,0,.75);
+  display:flex;align-items:center;justify-content:center;
+  position:relative;overflow:hidden;
+}
+.wheel-housing::before,.wheel-housing::after{display:none}
+
+.wheel-drum{
+  width:100%;height:100%;border-radius:8px;cursor:grab;user-select:none;touch-action:none;
+  background-color:#786b5c;
+  background-image:
+    /* 1-й слой: яркий выпуклый блик по центру и мягкое закругление к краям */
+    radial-gradient(ellipse 95% 52% at 42% 50%,rgba(255,248,235,.55) 0%,rgba(255,240,215,.15) 55%,rgba(15,12,10,.75) 100%),
+    /* 2-й слой: чёткие рельефные зубцы накатки */
+    repeating-linear-gradient(0deg,
+      #14110e 0px,#14110e 2px,
+      #e3d5c3 2px,#e3d5c3 3.5px,
+      #857766 3.5px,#857766 7px,
+      #363029 7px,#363029 10px
+    );
+  background-size:100% 100%, 100% 20px;
+  border:1px solid #14110e;
+  box-shadow:
+    inset 0 2px 3px rgba(255,250,240,.5),
+    inset 0 -3px 5px rgba(0,0,0,.85),
+    0 2px 5px rgba(0,0,0,.9);
+}
+
+
+
+/* Глубокий бронекозырёк и скошенная шахта монитора в духе Fallout */
+.crt-bezel{
+  flex:1;height:100%;min-height:0;
+  background:linear-gradient(180deg,#12100d 0%,#241f1a 18%,#1a1612 85%,#0d0b09 100%);
+  border:3px solid #0a0806;
+  border-top:6px solid #14110e;
+  border-bottom:5px solid #2b251e;
+  border-radius:16px;
+  padding:8px 7px 6px 7px;
+  box-shadow:
+    inset 0 10px 18px rgba(0,0,0,.98),
+    inset 0 -4px 10px rgba(0,0,0,.9),
+    0 1px 0 rgba(255,215,175,.18);
+  position:relative;display:flex;
+}
+.crt-screen{flex:1;width:100%;height:100%;min-height:0;position:relative;overflow:hidden;background:var(--bg);border:1px solid #0a140c;border-radius:8px;background-image:radial-gradient(ellipse at center,var(--glow) 0%,transparent 75%),linear-gradient(rgba(18,16,16,0) 50%,rgba(0,0,0,.06) 50%);background-size:100% 100%,100% 4px;box-shadow:inset 0 0 30px rgba(0,0,0,.92);transition:.4s}
+.crt-screen::after{content:'';position:absolute;inset:0;pointer-events:none;z-index:12;border-radius:8px;background:linear-gradient(135deg,rgba(255,255,255,.04) 0%,transparent 52%);box-shadow:inset 0 0 20px rgba(0,0,0,.75)}
+.crt-screen.off-state{background:radial-gradient(ellipse at 30% 20%,#151b18 0%,#070a09 55%,#020303 100%);box-shadow:inset 0 0 60px #000}
+
+.grill-slots{display:flex;gap:5px;align-items:center}
+.grill-slots i{width:5px;height:18px;background:#090705;border-radius:2px;border-bottom:1px solid rgba(255,210,165,.16);box-shadow:inset 0 2px 4px #000}
+.rotary-mini{
+  width:22px;height:22px;border-radius:50%;
+  background:radial-gradient(circle at 35% 35%,#594e42,#211c17 75%);
+  border:1px solid #0e0c09;position:relative;cursor:pointer;
+  transform-origin:center center;transition:transform .25s ease;flex-shrink:0;
+}
+.rotary-mini::after{
+  content:'';position:absolute;top:2px;left:50%;width:2px;height:8px;
+  transform:translateX(-50%);background:var(--g);border-radius:1px;box-shadow:0 0 4px var(--g);
+}
+
+.screen-reflection{position:absolute;inset:0;pointer-events:none;z-index:20;opacity:0;transition:opacity .6s;display:flex;align-items:flex-end;justify-content:center}
+.crt-screen.off-state .screen-reflection{opacity:1}
+.glass-glare{position:absolute;inset:-20%;background:linear-gradient(125deg,rgba(255,255,255,.07) 0%,transparent 45%)}
+.entity-silhouette{width:260px;max-width:75%;height:auto;opacity:.22;filter:blur(3.5px);transform:translateY(8px)}
+.boot-overlay{position:absolute;inset:0;z-index:15;background:var(--bg);padding:24px;display:none;flex-direction:column;justify-content:center;gap:10px;font-size:.85rem}
+.boot-bar{width:100%;max-width:360px;height:12px;border:1px solid var(--g);padding:2px;margin-top:6px}
+.boot-fill{height:100%;width:0%;background:var(--g);box-shadow:0 0 10px var(--g);transition:width .25s linear}
+@keyframes crtOn{0%{transform:scaleY(.005) scaleX(.2);filter:brightness(4);opacity:0}40%{transform:scaleY(.008) scaleX(1);filter:brightness(3);opacity:1}100%{transform:scaleY(1) scaleX(1);filter:brightness(1);opacity:1}}
+.crt-flash{animation:crtOn .45s cubic-bezier(.23,1,.32,1) forwards}
+.screen-content{display:flex;flex-direction:column;gap:8px;padding:8px;height:100%;overflow-y:auto;scrollbar-width:none;transition:opacity .25s}
+.screen-content::-webkit-scrollbar{display:none}
+.crt-screen.off-state .screen-content{opacity:0;pointer-events:none}
+
+.cfg-screw{width:56px;height:19px;display:inline-flex;align-items:center;justify-content:center;white-space:nowrap;background:#24201b;color:#786d5f;border:1px solid #0e0c0a;border-radius:10px;font-size:.6rem;text-shadow:none;opacity:.75;transition:.2s;flex-shrink:0}
+.cfg-screw:hover{opacity:1;color:#d4c8b4;background:#302b24}.cfg-screw.active{opacity:1;background:#3b2710;color:var(--amb);border-color:var(--amb);box-shadow:0 0 8px rgba(255,157,0,.45)}
+.cfg-banner{display:none;background:rgba(255,157,0,.1);border:1px dashed var(--amb);color:var(--amb);padding:5px 9px;font-size:.74rem;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+body.cfg-mode .cfg-banner{display:flex}body.cfg-mode .card{border-style:dashed;border-color:var(--amb)}
+body.cfg-mode .lbl-edit{cursor:pointer;border-bottom:1px dashed var(--amb);color:#ffd470;padding:0 2px}
+body.cfg-mode .lbl-edit::after{content:' ✎';font-size:.65rem}
+.cfg-ctrls{display:none;gap:3px;align-items:center}body.cfg-mode .cfg-ctrls{display:inline-flex}
+.cfg-btn{padding:1px 5px;font-size:.68rem;border-color:var(--amb);color:var(--amb);background:#141004;text-shadow:none}.cfg-btn:hover{background:var(--amb);color:#000}
+
+.card{
+  background:linear-gradient(180deg,var(--panel) 0%,var(--bg) 100%);
+  border:1px solid var(--g);padding:9px;
+  box-shadow:inset 0 0 18px var(--glow),0 0 6px rgba(0,0,0,.6);
+}
+button{background:var(--box);color:var(--g);border:1px solid var(--g);padding:5px 9px;cursor:pointer;font-weight:700;font-size:.82rem;text-transform:uppercase}
+button:hover:not(:disabled){background:var(--g);color:#000}button:disabled{opacity:.35;cursor:not-allowed}
+button.red{border-color:var(--red);color:var(--red);text-shadow:none}button.red:hover:not(:disabled){background:var(--red);color:#000}
+.lk{padding:4px 8px;font-size:.8rem}.lk.on{border-color:var(--amb);color:var(--amb)}
+.grid{display:grid;grid-template-columns:1.2fr 1fr;gap:10px;align-items:start}.col{display:grid;gap:10px}
+.ttl{font-size:.92rem;font-weight:800;border:1px solid var(--gd);background:var(--box);padding:6px 9px;margin-bottom:9px;display:flex;justify-content:space-between;align-items:center;gap:6px;flex-wrap:wrap}
+.ttl-right{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.prof{display:grid;grid-template-columns:1fr 1.35fr;gap:10px;align-items:stretch}
+.art-col{display:flex;flex-direction:column;gap:5px;height:100%}
+.art{
+  width:100%;height:260px;max-height:260px;background:var(--bg);
+  border:1px solid var(--g);display:flex;align-items:center;justify-content:center;
+  cursor:pointer;text-align:center;font-size:.85rem;overflow:hidden;position:relative;padding:0;
+}
+.art img{
+  max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;display:block;
+}
+
+.bio{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.pill{background:var(--box);border:1px solid var(--gd);padding:6px 8px;cursor:pointer;min-height:46px;display:flex;flex-direction:column;justify-content:center;overflow:hidden}
+.pill:hover{border-color:var(--g)}.pill.ex{border-left:3px solid var(--g)}.pill small{font-size:.76rem;opacity:.85;text-transform:uppercase}.pill b{font-size:.98rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+
+.sk-list{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+.sk-mod{background:var(--box);border:1px solid var(--gd);border-top:2px solid var(--g);padding:7px 5px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:5px}
+/* В основном правиле .sk-name ставим нормальную толщину шрифта: */
+.sk-name{
+  font-size:.78rem;
+  font-weight:500;
+  line-height:1.35;
+  letter-spacing:.7px;
+  text-shadow:0 0 2px var(--glow), 0 1px 1px #000;
+  word-break:break-word;
+  letter-spacing: 1.5px !important;
+  text-shadow: none !important;
+}
+button {
+  letter-spacing: 1.8px !important;
+}
+
+/* Для верхних и нижних тумблеров делаем аккуратную разрядку, чтобы текст не упирался в лампочки */
+.hw-btn, .rocker-btn {
+  letter-spacing: 1.2px !important;
+}
+.sk-ctrl{display:flex;align-items:center;gap:4px}
+.sk-step{width:26px;height:28px;padding:0;display:flex;align-items:center;justify-content:center;background:var(--bg);border:1px solid var(--gd);color:var(--g);font-weight:900;font-size:1rem;line-height:1}
+.sk-step:hover:not(:disabled){background:var(--g);color:#000;border-color:var(--g)}
+.sk-mod input,.base-in{width:44px;height:28px;text-align:center;background:var(--bg);border:1px solid var(--g);color:var(--g);font-weight:900;font-size:1.05rem;padding:2px;outline:none;-moz-appearance:textfield}
+.sk-mod input::-webkit-outer-spin-button,.sk-mod input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.base-in{width:36px;height:24px;font-size:.9rem;padding:1px}
+
+.mtr{background:var(--box);border:1px solid var(--gd);padding:8px 9px;margin-bottom:7px;display:grid;gap:6px}.mtr:last-child{margin-bottom:0}.mtr.ex{border-left:3px solid var(--g)}
+.mtr-top{display:flex;justify-content:space-between;align-items:center;gap:6px;flex-wrap:wrap}
+.mtr-l{flex:1;min-width:120px;cursor:pointer;display:flex;gap:6px;align-items:center;overflow:hidden;font-size:.92rem}.mtr-l span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pips{display:flex;gap:4px;flex-wrap:wrap;align-items:center}
+.pip{width:23px;height:23px;border:1px solid var(--gd);background:var(--bg);display:flex;align-items:center;justify-content:center;font-weight:800;cursor:pointer;color:transparent;user-select:none;font-size:.85rem}.pip.on{border-color:var(--g);color:var(--g);background:var(--glow)}
+.mtr-bar{height:6px;background:var(--bg);border:1px solid var(--gd);width:100%;overflow:hidden}.mtr-fill{height:100%;background:var(--g);box-shadow:0 0 6px var(--g);transition:width .2s}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin:5px 0 9px}
+.tag{background:var(--box);border:1px solid var(--gd);padding:4px 9px;font-size:.88rem;cursor:pointer;display:inline-flex;gap:6px;align-items:center;max-width:100%}.tag span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.tag:hover,.tag.ex{border-color:var(--g)}.tag b{color:var(--red);text-shadow:none;font-size:1rem}
+textarea,input[type="text"],input[type="number"]{
+  width:100%;
+  background:var(--bg);
+  border:1px solid var(--g);
+  color:var(--g);
+  padding:8px;
+  font-size:.96rem;
+  font-weight:500;
+  letter-spacing:1.8px;
+  line-height:1.45;
+  outline:none;
+}
+.sk-mod input[type="number"]{width:44px;padding:2px}.base-in{width:36px;padding:1px}
+textarea{min-height:105px;resize:vertical}textarea:read-only{border-color:var(--gd);opacity:.85}
+textarea{min-height:90px;resize:vertical}textarea:read-only{border-color:var(--gd);opacity:.8}
+#tip{position:fixed;z-index:99;pointer-events:none;max-width:260px;background:var(--bg);border:1px solid var(--g);padding:8px;display:none}#tip img{width:100%;max-height:140px;object-fit:cover;margin-bottom:5px;display:none}
+.mbg{display:none;position:absolute;inset:0;background:rgba(2,8,3,.88);z-index:10;align-items:center;justify-content:center;padding:12px}
+.mdl{background:var(--panel);border:1px solid var(--g);padding:12px;width:100%;max-width:420px;display:grid;gap:8px;box-shadow:0 0 25px rgba(0,0,0,.95)}
+
+@media(max-width:900px){.grid{grid-template-columns:1fr}}
+@media(max-width:560px){
+
+  .pb-case{padding:4px 6px;border-radius:14px;border-width:2.5px;gap:3px}
+  .pb-case.case-10{border-radius:20px}
+
+  .pb-case::before,.pb-case::after{display:none}
+.top-deck,.bottom-deck{
+  display:flex;justify-content:space-between;align-items:center;gap:6px;flex-shrink:0;
+  background:linear-gradient(180deg,#7a7366,#544f46);
+  border:1.5px solid #36322c;border-radius:8px;padding:4px 8px;
+  box-shadow:inset 0 1px 1px rgba(255,255,255,.25),0 2px 5px rgba(0,0,0,.65);
+}
+.rust-plate{
+  background:linear-gradient(180deg,#d6cfc2,#9e9689);
+  border:1.5px solid #4a453d;border-radius:4px;padding:2px 8px;color:#24211c;
+  font-weight:700;font-size:.75rem;letter-spacing:1.2px;text-shadow:none;
+  display:inline-flex;align-items:center;gap:6px;white-space:nowrap;
+}
+.model-tag{font-size:.6rem;color:#ebe5d8;background:#3b3730;padding:1px 5px;border:1px solid #24211c;border-radius:2px}
+
+  .mid-deck{gap:4px}
+  .wheel-housing{width:20px;height:86px;padding:3px 2px;align-self:center;overflow:hidden}
+  .wheel-housing::before,.wheel-housing::after{display:none}
+  .wheel-drum{width:100%;height:100%}
+  .crt-bezel{padding:4px;border-radius:10px}
+  .prof{grid-template-columns:1fr}
+  .art{min-height:140px;aspect-ratio:16/9}
+  .art img{width:100%;height:100%;object-fit:contain}
+  .rocker-slot{width:68px;height:25px}
+  .rocker-btn{padding:0 5px;gap:4px;font-size:.55rem}
+  .grill-slots{display:none}
+}
+
+/* === БАЗОВЫЕ ЦВЕТА КНОПОК И ЛАМПОЧЕК === */
+.pb-case{
+  --btn-bg:linear-gradient(180deg,#423c34,#26221d);
+  --btn-txt:#e8dec8;
+  --btn-brd:#14120f;
+  --rocker-bg:linear-gradient(90deg,#1a1612 0%,#362f27 38%,#54493d 92%,#6b5d4e 100%);
+  --rocker-lit-bg:linear-gradient(90deg,#6b5d4e 0%,#54493d 8%,#362f27 62%,#1c1610 100%);
+  --rocker-lit:#ff9d00;
+}
+
+
+/* 1. Цельный огранённый Рубин */
+.pb-case.case-1{
+  --btn-bg:linear-gradient(180deg,#7a041f,#3b020f);--btn-txt:#ffd6e0;--btn-brd:#b80d35;
+  --rocker-bg:linear-gradient(90deg,#2b010a,#6e041d);--rocker-lit-bg:linear-gradient(90deg,#8f0726,#3b020f);--rocker-lit:#ff3366;
+  border:3px solid #4a0312;border-radius:14px;
+  background:
+    linear-gradient(125deg,rgba(255,150,180,.45) 0%,rgba(255,150,180,.45) 14%,transparent 14.5%),
+    linear-gradient(235deg,rgba(255,50,95,.4) 0%,rgba(255,50,95,.4) 18%,transparent 18.5%),
+    linear-gradient(55deg,#240008 0%,#240008 22%,transparent 22.5%),
+    linear-gradient(135deg,#e61747 0%,#8f0424 50%,#33000b 100%);
+  box-shadow:inset 0 0 0 2px #3b010e,inset 0 2px 6px rgba(255,165,190,.5),inset 0 -4px 12px #140004;
+}
+.pb-case.case-1 .top-deck,.pb-case.case-1 .bottom-deck{
+  background:
+    linear-gradient(115deg,rgba(255,110,145,.28) 0%,rgba(255,110,145,.28) 28%,transparent 28.5%),
+    linear-gradient(245deg,rgba(30,0,8,.65) 0%,rgba(30,0,8,.65) 32%,transparent 32.5%),
+    linear-gradient(180deg,#7a041f,#2e010b);
+  border:1.5px solid #6e041c;
+}
+.pb-case.case-1 .rust-plate{background:linear-gradient(180deg,#b80d35,#520214);color:#ffd6e0;border:1.5px solid #8c0726}
+.pb-case.case-1 .model-tag{background:#33000b;color:#ff85a2;border:1px solid #8c0726;font-weight:900}
+
+/* 2. Неоновый Киберпанк */
+.pb-case.case-2{
+  --btn-bg:linear-gradient(180deg,#241b35,#120d1c);--btn-txt:#00f0ff;--btn-brd:#ff007f;
+  --rocker-bg:linear-gradient(90deg,#120d1c,#2c1e42);--rocker-lit-bg:linear-gradient(90deg,#3d265e,#160f24);--rocker-lit:#ff007f;
+  border:2.5px solid #ff007f;border-radius:6px;
+  background:
+    radial-gradient(ellipse at 0% 50%,rgba(255,0,127,.45) 0%,transparent 22%),
+    radial-gradient(ellipse at 100% 50%,rgba(0,240,255,.45) 0%,transparent 22%),
+    repeating-linear-gradient(135deg,rgba(0,240,255,.06) 0px,rgba(0,240,255,.06) 2px,transparent 2px,transparent 16px),
+    linear-gradient(180deg,#1b1726 0%,#100e17 50%,#09080d 100%);
+  box-shadow:inset 0 0 18px rgba(255,0,127,.3),inset 0 -4px 12px #050408;
+}
+.pb-case.case-2 .top-deck,.pb-case.case-2 .bottom-deck{
+  background:
+    linear-gradient(90deg,#ff007f 0%,#ff007f 6px,transparent 6px,transparent calc(100% - 6px),#00f0ff calc(100% - 6px)),
+    linear-gradient(180deg,#1f1a2e,#0e0c14);
+  border:1.5px solid #00f0ff;border-radius:3px;box-shadow:0 0 10px rgba(0,240,255,.22);
+}
+.pb-case.case-2 .rust-plate{background:#0e0c14;color:#00f0ff;border:1.5px solid #ff007f;border-radius:2px;box-shadow:0 0 10px rgba(255,0,127,.4)}
+.pb-case.case-2 .model-tag{background:#ff007f;color:#ffffff;border:none;font-weight:900}
+
+/* 3. Армейский планшет */
+.pb-case.case-3{
+  --btn-bg:linear-gradient(180deg,#3b3830,#1f1e1a);--btn-txt:#f0c44d;--btn-brd:#696352;
+  --rocker-bg:linear-gradient(90deg,#1f1e1a,#454136);--rocker-lit-bg:linear-gradient(90deg,#595344,#24221d);--rocker-lit:#f0c44d;
+  border:5px solid #171614;border-radius:10px;
+  background:
+    radial-gradient(ellipse at 18% 22%,#7d7055 0%,#7d7055 18%,transparent 19%),
+    radial-gradient(ellipse at 78% 18%,#5c533e 0%,#5c533e 22%,transparent 23%),
+    radial-gradient(ellipse at 45% 82%,#7d7055 0%,#7d7055 24%,transparent 25%),
+    radial-gradient(ellipse at 85% 75%,#4a4332 0%,#4a4332 16%,transparent 17%),
+    linear-gradient(165deg,#9c8e70 0%,#82755b 50%,#695e48 100%);
+  box-shadow:inset 0 0 0 3px #24221e,inset 0 2px 4px rgba(255,245,220,.3),inset 0 -4px 10px #12110f;
+}
+.pb-case.case-3 .top-deck,.pb-case.case-3 .bottom-deck{background:linear-gradient(180deg,#262420,#141311);border:1.5px solid #82755b;border-radius:4px}
+.pb-case.case-3 .rust-plate{background:#1f1e1b;color:#f0c44d;border:1.5px solid #f0c44d;border-radius:2px}
+.pb-case.case-3 .model-tag{background:#f0c44d;color:#141311;border:none;font-weight:900}
+
+/* 4. Лаборатория Aperture Science */
+.pb-case.case-4{
+  --btn-bg:linear-gradient(180deg,#ffffff,#dce2e8);--btn-txt:#1e2226;--btn-brd:#9aa6b2;
+  --rocker-bg:linear-gradient(90deg,#cfd6de,#ffffff);--rocker-lit-bg:linear-gradient(90deg,#ffffff,#cbd5e1);--rocker-lit:#ff7700;
+  border:3px solid #22262b;border-radius:16px;
+  background:
+    radial-gradient(circle at 0% 50%,rgba(255,119,0,.45) 0%,transparent 18%),
+    radial-gradient(circle at 100% 50%,rgba(0,162,255,.45) 0%,transparent 18%),
+    linear-gradient(165deg,#ffffff 0%,#e9eef2 55%,#cfd8e0 100%);
+  box-shadow:inset 0 2px 4px #fff,inset 0 -3px 8px rgba(45,55,68,.4);
+}
+.pb-case.case-4 .top-deck,.pb-case.case-4 .bottom-deck{background:linear-gradient(180deg,#f5f7fa,#dce2e8);border-color:#9aa6b2}
+.pb-case.case-4 .rust-plate{background:#1e2226;color:#fff;border-color:#00a2ff}
+.pb-case.case-4 .model-tag{background:#ff7700;color:#fff;border-color:#cc5f00;font-weight:900}
+
+/* 5. Прозрачный пластик 90-х */
+.pb-case.case-5{
+  --btn-bg:linear-gradient(180deg,#485060,#262b36);--btn-txt:#e6eef8;--btn-brd:#748096;
+  --rocker-bg:linear-gradient(90deg,#262b36,#485060);--rocker-lit-bg:linear-gradient(90deg,#5a6478,#2c3240);--rocker-lit:#4ade80;
+  border-radius:18px;border:2px solid #485060;
+  background:
+    repeating-linear-gradient(0deg,rgba(255,255,255,.03) 0px,rgba(255,255,255,.03) 2px,transparent 2px,transparent 14px),
+    repeating-linear-gradient(90deg,rgba(255,255,255,.03) 0px,rgba(255,255,255,.03) 2px,transparent 2px,transparent 14px),
+    radial-gradient(circle at 20% 25%,rgba(80,200,120,.14) 0%,transparent 35%),
+    radial-gradient(circle at 80% 75%,rgba(220,160,60,.14) 0%,transparent 35%),
+    linear-gradient(165deg,rgba(85,95,112,.72) 0%,rgba(48,54,66,.82) 50%,rgba(28,32,40,.9) 100%);
+  box-shadow:inset 0 2px 4px rgba(255,255,255,.45),inset 0 -4px 10px rgba(0,0,0,.85);
+}
+.pb-case.case-5 .top-deck,.pb-case.case-5 .bottom-deck{background:rgba(28,32,40,.75);border-color:#485060;border-radius:12px}
+.pb-case.case-5 .rust-plate{background:rgba(255,255,255,.12);color:#e6eef8;border-color:#687387}
+.pb-case.case-5 .model-tag{background:#17130f;color:#a39179;border-color:#0d0b09}
+
+/* 6. Плетёный карбон */
+.pb-case.case-6{
+  --btn-bg:linear-gradient(180deg,#252930,#121418);--btn-txt:var(--g);--btn-brd:#3b424d;
+  --rocker-bg:linear-gradient(90deg,#121418,#282c34);--rocker-lit-bg:linear-gradient(90deg,#323842,#16181d);--rocker-lit:var(--g);
+  border-radius:4px;border:2px solid #2b2f36;
+  background:
+    radial-gradient(circle at 50% 50%,transparent 60%,rgba(0,0,0,.75) 100%),
+    repeating-linear-gradient(45deg,#181a1f 0px,#181a1f 4px,#242830 4px,#242830 8px),
+    repeating-linear-gradient(-45deg,#14161a 0px,#14161a 4px,#292d36 4px,#292d36 8px);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.15),inset 0 0 20px #000;
+}
+.pb-case.case-6 .top-deck,.pb-case.case-6 .bottom-deck{background:#121418;border-color:#353a45;border-radius:2px}
+.pb-case.case-6 .rust-plate{background:#1c2026;color:var(--g);border-color:var(--g);border-radius:2px}
+.pb-case.case-6 .model-tag{background:#17130f;color:#a39179;border-color:#0d0b09}
+
+/* 7. Полированный орех и хром */
+.pb-case.case-7{
+  --btn-bg:linear-gradient(180deg,#e2e8f0,#94a3b8);--btn-txt:#1e293b;--btn-brd:#475569;
+  --rocker-bg:linear-gradient(90deg,#94a3b8,#e2e8f0);--rocker-lit-bg:linear-gradient(90deg,#f8fafc,#94a3b8);--rocker-lit:#f59e0b;
+  border-radius:10px;border:3px solid #241309;
+  background:
+    repeating-linear-gradient(90deg,rgba(25,10,2,.18) 0px,rgba(25,10,2,.18) 2px,transparent 2px,transparent 9px,rgba(90,42,14,.22) 9px,rgba(90,42,14,.22) 15px),
+    linear-gradient(165deg,#783d19 0%,#54280e 45%,#361807 100%);
+  box-shadow:inset 0 1px 3px rgba(255,195,140,.4),inset 0 -3px 8px #140903;
+}
+.pb-case.case-7 .top-deck,.pb-case.case-7 .bottom-deck{background:linear-gradient(180deg,#b8bec7 0%,#7d848f 50%,#4f545c 100%);border-color:#2b2e33}
+.pb-case.case-7 .rust-plate{background:linear-gradient(180deg,#f0f3f7,#9ea6b2);color:#1d2024;border-color:#454a52;text-shadow:none}
+.pb-case.case-7 .model-tag{background:#54280e;color:#ffdfb8}
+/* 8. Чужие / Ностромо MU-TH-UR */
+.pb-case.case-8{
+  --btn-bg:linear-gradient(180deg,#2c3138,#16191d);--btn-txt:#e8edf2;--btn-brd:#e09f1f;
+  --rocker-bg:linear-gradient(90deg,#16191d,#323840);--rocker-lit-bg:linear-gradient(90deg,#424a54,#1a1d21);--rocker-lit:#e09f1f;
+  border:3px solid #121417;border-radius:6px;
+  background:repeating-linear-gradient(90deg,#121417 0px,#121417 4px,#262b30 4px,#262b30 18px),linear-gradient(180deg,#2c3138 0%,#1a1d21 100%);
+  box-shadow:inset 0 0 0 2px #3b424a,inset 0 4px 10px #000;
+}
+.pb-case.case-8 .top-deck,.pb-case.case-8 .bottom-deck{
+  background:repeating-linear-gradient(-45deg,#e09f1f 0px,#e09f1f 5px,#141619 5px,#141619 10px) bottom / 100% 3px no-repeat,linear-gradient(180deg,#22262b,#121417);
+  border:1.5px solid #4d5661;border-radius:3px;
+}
+.pb-case.case-8 .rust-plate{background:#141619;color:#e8edf2;border:1.5px solid #7d8996;border-radius:2px}
+.pb-case.case-8 .model-tag{background:#e09f1f;color:#121417;border:none;font-weight:900;letter-spacing:.5px}
+
+/* 9. Жук Херби №53 (Кнопки: красный, белый, синий) */
+.pb-case.case-9{
+  --btn-bg:linear-gradient(180deg,#ffffff,#dce2e8);--btn-txt:#181a1f;--btn-brd:#2b2926;
+  --rocker-bg:linear-gradient(90deg,#cfd5de,#ffffff);--rocker-lit-bg:linear-gradient(90deg,#ffffff,#cbd5e1);--rocker-lit:#dc2626;
+  border:4px solid #2b2926;border-radius:22px;
+  background:radial-gradient(ellipse at 12% 12%,rgba(125,95,62,.28) 0%,transparent 35%),radial-gradient(ellipse at 88% 88%,rgba(110,82,52,.35) 0%,transparent 40%),linear-gradient(180deg,#f5f1e6 0%,#e3dccb 55%,#c9c0ad 100%);
+  box-shadow:inset 0 3px 6px rgba(255,255,255,.8),inset 0 -5px 12px rgba(65,52,38,.55);
+}
+.pb-case.case-9 .top-deck,.pb-case.case-9 .bottom-deck{
+  position:relative;
+  background:linear-gradient(90deg,transparent 46%,#c92a2a 46%,#c92a2a 49.5%,#f5f1e6 49.5%,#f5f1e6 51%,#234894 51%,#234894 53.5%,transparent 53.5%),linear-gradient(180deg,#eceff2 0%,#aeb5bf 48%,#6d737d 52%,#cfd5de 100%);
+  border:1.5px solid #3e424a;border-radius:12px;
+}
+.pb-case.case-9 .rust-plate{background:#f7f4eb;color:#1f1e1c;border:2px solid #2b2926;border-radius:12px;text-shadow:none}
+.pb-case.case-9 .model-tag{
+  width:23px;height:21px;padding:0;border-radius:50%;background:#f7f4eb;border:1.5px solid #2b2926;color:#1f1e1c;
+  font-size:.64rem;font-weight:900;letter-spacing:-.5px;display:inline-flex;align-items:center;justify-content:center;
+}
+.pb-case.case-9 .model-tag::after,.pb-case.case-9 .top-deck::after{display:none}
+.pb-case.case-9 .top-deck::before{
+  content:'53';position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  width:34px;height:31px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#ffffff 55%,#e0d7c3 100%);
+  border:2.5px solid #181a1f;color:#111214;font-family:'Arial Black',Impact,sans-serif;
+  font-size:1.05rem;font-weight:900;letter-spacing:-1px;line-height:1;
+  display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(0,0,0,.55);z-index:3;pointer-events:none;
+}
+
+/* Верхние 3 кнопки: 1-я красная, 2-я белая, 3-я синяя */
+.pb-case.case-9 .top-slot:nth-child(1) .hw-btn{background:linear-gradient(180deg,#ef4444,#b91c1c)!important;color:#ffffff!important;border-color:#7f1d1d!important}
+.pb-case.case-9 .top-slot:nth-child(2) .hw-btn{background:linear-gradient(180deg,#ffffff,#e2e8f0)!important;color:#181a1f!important;border-color:#475569!important}
+.pb-case.case-9 .top-slot:nth-child(3) .hw-btn{background:linear-gradient(180deg,#3b82f6,#1d4ed8)!important;color:#ffffff!important;border-color:#1e3a8a!important}
+
+/* Нижние клавиши: 1-я красная, 2-я белая, 3-я синяя, 4-я красная */
+.pb-case.case-9 .rocker-slot:nth-child(1) .rocker-btn{background:linear-gradient(90deg,#991b1b,#dc2626)!important;color:#ffffff!important;border-color:#7f1d1d!important}
+.pb-case.case-9 .rocker-slot:nth-child(2) .rocker-btn{background:linear-gradient(90deg,#cbd5e1,#ffffff)!important;color:#181a1f!important;border-color:#475569!important}
+.pb-case.case-9 .rocker-slot:nth-child(3) .rocker-btn{background:linear-gradient(90deg,#1e3a8a,#2563eb)!important;color:#ffffff!important;border-color:#172554!important}
+.pb-case.case-9 .rocker-slot:nth-child(4) .rocker-btn{background:linear-gradient(90deg,#991b1b,#dc2626)!important;color:#ffffff!important;border-color:#7f1d1d!important}
+
+
+/* 10. Портальная пушка ASHPD */
+.pb-case.case-10{
+  --btn-bg:linear-gradient(180deg,#ffffff,#dce2e8);--btn-txt:#141619;--btn-brd:#64748b;
+  --rocker-bg:linear-gradient(90deg,#cbd5e1,#ffffff);--rocker-lit-bg:linear-gradient(90deg,#ffffff,#cbd5e1);--rocker-lit:#00a2ff;
+  border:3px solid #141619;border-radius:24px;
+  background:radial-gradient(ellipse at 50% 0%,rgba(255,255,255,.95) 0%,transparent 45%),linear-gradient(180deg,#ffffff 0%,#eef1f5 50%,#d5dce4 100%);
+  box-shadow:inset 0 2px 4px #ffffff,inset 0 -5px 12px rgba(35,40,48,.5),0 4px 16px rgba(0,0,0,.6);
+}
+.pb-case.case-10 .top-deck,.pb-case.case-10 .bottom-deck{
+  position:relative;
+  background:radial-gradient(circle at 50% 50%,rgba(0,174,255,.35) 0%,transparent 28%),linear-gradient(180deg,#23272e 0%,#121418 100%);
+  border:2px solid #0e1013;border-radius:14px;box-shadow:inset 0 2px 6px rgba(0,0,0,.9),0 1px 0 rgba(255,255,255,.8);
+}
+.pb-case.case-10 .top-deck::before{
+  content:'';position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  width:46px;height:8px;border-radius:4px;background:linear-gradient(90deg,#0088ff,#80d8ff,#0088ff);
+  border:1px solid #08121c;box-shadow:0 0 12px #00a2ff,0 0 22px rgba(0,162,255,.7),inset 0 0 3px #fff;pointer-events:none;
+}
+.pb-case.case-10 .rust-plate{background:#ffffff;color:#141619;border:2px solid #141619;border-radius:10px;text-shadow:none;font-weight:900}
+.pb-case.case-10 .model-tag{background:linear-gradient(90deg,#00a2ff 50%,#ff7700 50%);color:#ffffff;border:1px solid #141619;border-radius:6px;font-weight:900;text-shadow:0 1px 2px #000}
+
+/* 11. Испытательная камера Portal */
+.pb-case.case-11{
+  --btn-bg:linear-gradient(180deg,#23272e,#121418);--btn-txt:#66c7ff;--btn-brd:#00a2ff;
+  --rocker-bg:linear-gradient(90deg,#121418,#2b3038);--rocker-lit-bg:linear-gradient(90deg,#363d47,#16191e);--rocker-lit:#ff7700;
+  border:3px solid #16181c;border-radius:10px;
+  background:
+    linear-gradient(90deg,#00a2ff 0%,#66c7ff 4px,#0066cc 8px,transparent 14px) left / 100% 100% no-repeat,
+    linear-gradient(90deg,transparent calc(100% - 14px),#cc5200 calc(100% - 8px),#ff944d calc(100% - 4px),#ff7700 100%) right / 100% 100% no-repeat,
+    repeating-linear-gradient(90deg,rgba(15,17,20,.35) 0px,rgba(15,17,20,.35) 2px,transparent 2px,transparent 60px),
+    repeating-linear-gradient(0deg,rgba(15,17,20,.35) 0px,rgba(15,17,20,.35) 2px,transparent 2px,transparent 60px),
+    linear-gradient(180deg,#484f59 0%,#32373e 50%,#212429 100%);
+  box-shadow:inset 6px 0 14px rgba(0,162,255,.45),inset -6px 0 14px rgba(255,119,0,.45),inset 0 -4px 10px #0d0e11;
+}
+.pb-case.case-11 .top-deck,.pb-case.case-11 .bottom-deck{
+  background:radial-gradient(circle,#00a2ff 2px,transparent 2.5px) left center / 14px 10px repeat-x,linear-gradient(180deg,#23272e 0%,#15181c 100%);
+  border:1.5px solid #59626e;border-radius:6px;box-shadow:inset 4px 0 8px rgba(0,162,255,.35),inset -4px 0 8px rgba(255,119,0,.35);
+}
+.pb-case.case-11 .rust-plate{
+  background:linear-gradient(90deg,#00a2ff 0%,#00a2ff 4px,transparent 4px,transparent calc(100% - 4px),#ff7700 calc(100% - 4px)),linear-gradient(180deg,#1a1e24 0%,#0e1014 100%);
+  color:#e6f4ff;border:1.5px solid #48525e;border-radius:3px;padding:2px 10px;text-shadow:0 0 6px rgba(0,162,255,.55);
+}
+.pb-case.case-11 #lbl-brand{font-weight:900;color:#66c7ff;letter-spacing:1.4px}
+.pb-case.case-11 .model-tag{background:#ff7700;color:#0e1014;border:none;text-shadow:none;border-radius:2px;font-weight:900;letter-spacing:.8px}
+
+/* 12. Синтвейв 1984 */
+.pb-case.case-12{
+  --btn-bg:linear-gradient(180deg,#4a146b,#220736);--btn-txt:#00f0ff;--btn-brd:#ff2a85;
+  --rocker-bg:linear-gradient(90deg,#220736,#5b1885);--rocker-lit-bg:linear-gradient(90deg,#7a20b3,#2b0942);--rocker-lit:#00f0ff;
+  border:3px solid #ff2a85;border-radius:10px;
+  background:repeating-linear-gradient(0deg,rgba(0,240,255,.16) 0px,rgba(0,240,255,.16) 1px,transparent 1px,transparent 18px),linear-gradient(180deg,#ff6b2b 0%,#d91e7a 38%,#4a146b 75%,#1c0933 100%);
+  box-shadow:inset 0 0 14px rgba(255,42,133,.45),inset 0 -4px 12px #0f041c;
+}
+.pb-case.case-12 .top-deck,.pb-case.case-12 .bottom-deck{background:linear-gradient(180deg,#2b0d47,#150624);border:1.5px solid #00f0ff;border-radius:4px}
+.pb-case.case-12 .rust-plate{background:#150624;color:#ff71b5;border:1.5px solid #00f0ff;border-radius:3px}
+.pb-case.case-12 .model-tag{background:#ff2a85;color:#ffffff;border:none;font-weight:900}
+
+/* 13. Древний обсидиан и руны */
+.pb-case.case-13{
+  --btn-bg:linear-gradient(180deg,#222730,#12141a);--btn-txt:#9ef0ff;--btn-brd:#59c9e8;
+  --rocker-bg:linear-gradient(90deg,#12141a,#2c3340);--rocker-lit-bg:linear-gradient(90deg,#384252,#161921);--rocker-lit:#59c9e8;
+  border:3px solid #16191f;border-radius:12px;
+  background:
+    repeating-linear-gradient(60deg,rgba(110,235,255,.18) 0px,rgba(110,235,255,.18) 2px,transparent 2px,transparent 28px),
+    repeating-linear-gradient(-60deg,rgba(110,235,255,.12) 0px,rgba(110,235,255,.12) 2px,transparent 2px,transparent 28px),
+    linear-gradient(165deg,#2b303a 0%,#1a1d24 52%,#0e1014 100%);
+  box-shadow:inset 0 0 0 2px #3c4554,inset 0 0 14px rgba(110,235,255,.25),inset 0 -4px 12px #060709;
+}
+.pb-case.case-13 .top-deck,.pb-case.case-13 .bottom-deck{background:linear-gradient(180deg,#222730,#12141a);border:1.5px solid #59c9e8;border-radius:6px}
+.pb-case.case-13 .rust-plate{background:#12141a;color:#9ef0ff;border:1.5px solid #59c9e8;border-radius:4px;text-shadow:0 0 6px rgba(110,235,255,.6)}
+.pb-case.case-13 .model-tag{background:#59c9e8;color:#0b0e14;border:none;font-weight:900}
+
+/* 14. Раскалённый металл */
+.pb-case.case-14{
+  --btn-bg:linear-gradient(180deg,#450a02,#1f0400);--btn-txt:#ffea80;--btn-brd:#ff6600;
+  --rocker-bg:linear-gradient(90deg,#1f0400,#5e0e02);--rocker-lit-bg:linear-gradient(90deg,#801400,#2b0600);--rocker-lit:#ffaa00;
+  border:3px solid #2b0600;border-radius:12px;
+  background:
+    radial-gradient(ellipse 35% 45% at 15% 100%,#ffdd33 0%,#ff6600 35%,transparent 70%),
+    radial-gradient(ellipse 40% 55% at 50% 100%,#fff066 0%,#ff4500 40%,transparent 75%),
+    radial-gradient(ellipse 35% 45% at 85% 100%,#ffdd33 0%,#ff6600 35%,transparent 70%),
+    radial-gradient(ellipse 30% 35% at 50% 0%,rgba(255,90,0,.45) 0%,transparent 65%),
+    linear-gradient(180deg,#1a0502 0%,#3d0902 45%,#801400 82%,#cc2900 100%);
+  box-shadow:inset 0 0 18px rgba(255,110,0,.55),inset 0 -6px 16px rgba(255,210,50,.65);
+}
+.pb-case.case-14 .top-deck,.pb-case.case-14 .bottom-deck{
+  background:radial-gradient(ellipse at 50% 100%,rgba(255,140,0,.45) 0%,transparent 60%),linear-gradient(180deg,#1f0602,#0f0200);
+  border:1.5px solid #ff5500;border-radius:6px;box-shadow:0 0 10px rgba(255,85,0,.35);
+}
+.pb-case.case-14 .rust-plate{background:linear-gradient(180deg,#590d02,#210400);color:#ffea80;border:1.5px solid #ff7700;border-radius:4px;text-shadow:0 0 8px rgba(255,130,0,.85)}
+.pb-case.case-14 .model-tag{background:linear-gradient(180deg,#ffdd33,#ff5500);color:#1a0300;border:none;text-shadow:none;font-weight:900}
+/* 15. Полированный малахит */
+.pb-case.case-15{
+  --btn-bg:linear-gradient(180deg,#153826,#0a1f14);--btn-txt:#a8ffcf;--btn-brd:#3cb371;
+  --rocker-bg:linear-gradient(90deg,#0a1f14,#1d4d34);--rocker-lit-bg:linear-gradient(90deg,#256343,#0d2619);--rocker-lit:#48d188;
+  border:3px solid #16241d;border-radius:14px;
+  background:repeating-radial-gradient(circle at 20% 20%,rgba(65,215,135,.22) 0px,rgba(65,215,135,.22) 6px,transparent 6px,transparent 18px),repeating-radial-gradient(circle at 80% 80%,rgba(10,45,28,.45) 0px,rgba(10,45,28,.45) 8px,transparent 8px,transparent 22px),linear-gradient(155deg,#1d6e46 0%,#12472d 50%,#092618 100%);
+  box-shadow:inset 0 2px 5px rgba(145,255,195,.35),inset 0 -4px 12px #04120b;
+}
+.pb-case.case-15 .top-deck,.pb-case.case-15 .bottom-deck{background:linear-gradient(180deg,#153826,#0a1f14);border:1.5px solid #3cb371;border-radius:8px}
+.pb-case.case-15 .rust-plate{background:#0a1f14;color:#a8ffcf;border:1.5px solid #48d188;border-radius:4px}
+.pb-case.case-15 .model-tag{background:#2e8b57;color:#ffffff;border:none;font-weight:900}
+
+/* 16. Скин «Медик / Спасатель» (Все кнопки — сигнально-жёлтые с тёмным текстом) */
+.pb-case.case-16{
+  --btn-bg:linear-gradient(180deg,#fde047 0%,#eab308 55%,#ca8a04 100%);
+  --btn-txt:#18181b;
+  --btn-brd:#713f12;
+  --rocker-bg:linear-gradient(90deg,#ca8a04 0%,#eab308 45%,#fde047 100%);
+  --rocker-lit-bg:linear-gradient(90deg,#fef08a 0%,#facc15 45%,#ca8a04 100%);
+  --rocker-lit:#ffffff;
+  border:3px solid #26292e;border-radius:14px;
+  background:radial-gradient(ellipse at 8% 8%,rgba(45,48,54,.35) 0%,transparent 22%),radial-gradient(ellipse at 92% 92%,rgba(45,48,54,.4) 0%,transparent 25%),repeating-linear-gradient(125deg,rgba(0,0,0,.04) 0px,rgba(0,0,0,.04) 1px,transparent 1px,transparent 6px),linear-gradient(180deg,#f2f4f7 0%,#dde2e8 55%,#c5ccd6 100%);
+  box-shadow:inset 0 0 0 2px #3b4048,inset 0 2px 4px #ffffff,inset 0 -4px 10px rgba(38,41,46,.55);
+}
+.pb-case.case-16 .crt-bezel{background:linear-gradient(180deg,#b91c1c 0%,#8f1111 50%,#5c0909 100%);border:3px solid #26292e;border-top:5px solid #dc2626;border-radius:14px;box-shadow:inset 0 8px 16px rgba(0,0,0,.9),0 0 0 1.5px #f87171}
+.pb-case.case-16 .top-deck{background:repeating-linear-gradient(-45deg,#eab308 0px,#eab308 5px,#18181b 5px,#18181b 10px) right / 18px 100% no-repeat,linear-gradient(180deg,#2563eb 0%,#1d4ed8 55%,#1e3a8a 100%);border:2px solid #f8fafc;border-radius:8px;box-shadow:0 2px 5px rgba(0,0,0,.55)}
+.pb-case.case-16 .bottom-deck{background:linear-gradient(180deg,#dc2626 0%,#991b1b 55%,#630d0d 100%);border:2px solid #26292e;border-radius:8px;box-shadow:inset 0 1px 2px rgba(255,180,180,.4),0 2px 5px rgba(0,0,0,.6)}
+.pb-case.case-16 .rust-plate{background:#ffffff;color:#18181b;border:2px solid #18181b;border-radius:4px;text-shadow:none;font-weight:900}
+.pb-case.case-16 .model-tag{background:#dc2626;color:#ffffff;border:none;border-radius:3px;font-weight:900;letter-spacing:.6px}
+
+/* Тёмный читаемый текст без тени на жёлтых кнопках */
+.pb-case.case-16 .hw-btn,
+.pb-case.case-16 .rocker-btn,
+.pb-case.case-16 .rocker-btn.lit{color:#18181b!important;text-shadow:none!important}
+
+/* 17. Японский лак и Кинцуги */
+.pb-case.case-17{
+  --btn-bg:linear-gradient(180deg,#292524,#0c0a09);--btn-txt:#fef08a;--btn-brd:#eab308;
+  --rocker-bg:linear-gradient(90deg,#0c0a09,#292524);--rocker-lit-bg:linear-gradient(90deg,#44403c,#141210);--rocker-lit:#facc15;
+  border:3px solid #1c1917;border-radius:14px;
+  background:linear-gradient(118deg,transparent 18%,#facc15 18.4%,#fef08a 19%,#ca8a04 19.6%,transparent 20%),linear-gradient(64deg,transparent 72%,#eab308 72.3%,#fef08a 72.8%,#a16207 73.3%,transparent 73.8%),linear-gradient(142deg,transparent 48%,#facc15 48.2%,#ca8a04 48.8%,transparent 49.2%),radial-gradient(ellipse at 25% 15%,rgba(255,255,255,.14) 0%,transparent 42%),linear-gradient(165deg,#1f1c1a 0%,#0f0d0c 55%,#050404 100%);
+  box-shadow:inset 0 0 0 2px #b91c1c,inset 0 2px 4px rgba(255,255,255,.22),inset 0 -4px 12px #000;
+}
+.pb-case.case-17 .top-deck,.pb-case.case-17 .bottom-deck{background:linear-gradient(105deg,transparent 30%,rgba(250,204,21,.55) 30.5%,transparent 31.2%),linear-gradient(180deg,#1c1917,#0a0908);border:1.5px solid #eab308;border-radius:8px}
+.pb-case.case-17 .rust-plate{background:#0a0908;color:#fef08a;border:1.5px solid #eab308;border-radius:4px;box-shadow:0 0 8px rgba(234,179,8,.3)}
+.pb-case.case-17 .model-tag{background:#dc2626;color:#fef2f2;border:1px solid #facc15;border-radius:3px;font-weight:900}
+
+/* 18. Дамасская сталь */
+.pb-case.case-18{
+  --btn-bg:linear-gradient(180deg,#334155,#0f172a);--btn-txt:#e2e8f0;--btn-brd:#2dd4bf;
+  --rocker-bg:linear-gradient(90deg,#0f172a,#334155);--rocker-lit-bg:linear-gradient(90deg,#475569,#1e293b);--rocker-lit:#2dd4bf;
+  border:3px solid #1e2229;border-radius:10px;
+  background:repeating-radial-gradient(circle at 15% 30%,rgba(226,232,240,.22) 0px,rgba(226,232,240,.22) 2px,rgba(30,41,59,.35) 2px,rgba(30,41,59,.35) 6px),repeating-radial-gradient(circle at 85% 70%,rgba(203,213,225,.2) 0px,rgba(203,213,225,.2) 3px,rgba(15,23,42,.4) 3px,rgba(15,23,42,.4) 8px),linear-gradient(135deg,#64748b 0%,#334155 50%,#1e293b 100%);
+  box-shadow:inset 0 1px 3px rgba(255,255,255,.4),inset 0 -4px 10px #090d14;
+}
+.pb-case.case-18 .top-deck,.pb-case.case-18 .bottom-deck{background:repeating-linear-gradient(125deg,rgba(255,255,255,.06) 0px,rgba(255,255,255,.06) 2px,transparent 2px,transparent 7px),linear-gradient(180deg,#1e293b,#0f172a);border:1.5px solid #94a3b8;border-radius:5px}
+.pb-case.case-18 .rust-plate{background:#0f172a;color:#e2e8f0;border:1.5px solid #2dd4bf;border-radius:3px}
+.pb-case.case-18 .model-tag{background:#14b8a6;color:#042f2e;border:none;border-radius:2px;font-weight:900}
+
+/* 19. Винтажный фотоаппарат */
+.pb-case.case-19{
+  --btn-bg:linear-gradient(180deg,#f4f4f5,#a1a1aa);--btn-txt:#18181b;--btn-brd:#27272a;
+  --rocker-bg:linear-gradient(90deg,#a1a1aa,#e4e4e7);--rocker-lit-bg:linear-gradient(90deg,#ffffff,#a1a1aa);--rocker-lit:#dc2626;
+  border:3px solid #18181b;border-radius:12px;
+  background:radial-gradient(rgba(255,255,255,.06) 1px,transparent 1px),radial-gradient(rgba(255,255,255,.04) 1px,transparent 1px),#141417;
+  background-size:6px 6px;background-position:0 0,3px 3px;
+  box-shadow:inset 0 0 0 2px #3f3f46,inset 0 -4px 12px #000;
+}
+.pb-case.case-19 .top-deck,.pb-case.case-19 .bottom-deck{background:repeating-linear-gradient(90deg,rgba(255,255,255,.15) 0px,rgba(255,255,255,.15) 1px,transparent 1px,transparent 3px),linear-gradient(180deg,#e4e4e7 0%,#a1a1aa 100%);border:1.5px solid #27272a;border-radius:6px}
+.pb-case.case-19 .rust-plate{background:#18181b;color:#f4f4f5;border:1.5px solid #52525b;border-radius:3px;letter-spacing:1.4px}
+.pb-case.case-19 .model-tag{background:#dc2626;color:#ffffff;border:none;border-radius:50%;padding:1px 6px;font-weight:900}
+
+/* 20. Чистое золото / Слиток 999 (С золотыми кнопками) */
+.pb-case.case-20{
+  --btn-bg:linear-gradient(180deg,#fff099 0%,#f5b82e 50%,#b8790a 100%);
+  --btn-txt:#291802;
+  --btn-brd:#5c3603;
+  --rocker-bg:linear-gradient(90deg,#9e6608 0%,#d4941c 45%,#fce079 92%,#fff099 100%);
+  --rocker-lit-bg:linear-gradient(90deg,#fff099 0%,#fce079 8%,#d4941c 62%,#8c5404 100%);
+  --rocker-lit:#ffffff;
+  border:3px solid #784805;border-radius:12px;
+  background:linear-gradient(125deg,rgba(255,253,230,.75) 0%,rgba(255,253,230,.75) 8%,transparent 8.5%,transparent 42%,rgba(255,250,210,.45) 42.5%,rgba(255,250,210,.45) 47%,transparent 47.5%),linear-gradient(155deg,#ffe57f 0%,#f5b82e 28%,#b8790a 52%,#f7c948 76%,#8c5404 100%);
+  box-shadow:inset 0 0 0 2px #fff099,inset 0 2px 5px #ffffff,inset 0 -5px 12px #4a2a02;
+}
+.pb-case.case-20 .top-deck,.pb-case.case-20 .bottom-deck{background:linear-gradient(180deg,#fce079 0%,#d4941c 48%,#9e6608 52%,#e6b138 100%);border:1.5px solid #5c3603;border-radius:7px;box-shadow:inset 0 1px 2px rgba(255,255,235,.85),0 2px 5px rgba(40,20,0,.6)}
+.pb-case.case-20 .crt-bezel{border-color:#5c3603;box-shadow:inset 0 8px 16px #000,0 0 0 1.5px #ffe57f}
+.pb-case.case-20 .rust-plate{background:linear-gradient(180deg,#291802,#140b00);color:#ffe57f;border:1.5px solid #ffd54f;border-radius:4px;text-shadow:0 1px 2px #000}
+.pb-case.case-20 .model-tag{background:linear-gradient(180deg,#fff099,#d4941c);color:#291802;border:1px solid #5c3603;border-radius:3px;font-weight:900;text-shadow:none;letter-spacing:.5px}
+
+/* === КОМФОРТНАЯ СВЕТЛАЯ ТЕМА С ПОНИЖЕННОЙ ЯРКОСТЬЮ ПОДСВЕТКИ === */
+.crt-screen.eink-mode {
+  /* Снижаем яркость подсветки самого экрана на 24%, чтобы белый не слепил глаза */
+  filter: brightness(0.76) contrast(0.94);
+  background-image: linear-gradient(rgba(0, 0, 0, 0.03) 50%, transparent 50%) !important;
+  box-shadow: inset 0 0 24px rgba(0, 0, 0, 0.35) !important;
+}
+
+.crt-screen.eink-mode .pill small,
+.crt-screen.eink-mode .pill b,
+.crt-screen.eink-mode .mtr-l span,
+.crt-screen.eink-mode .tags small,
+.crt-screen.eink-mode input::placeholder,
+.crt-screen.eink-mode textarea::placeholder {
+  color: #2b2e33 !important;
+  opacity: 0.85 !important;
+}
+
+/* === НАСТОЯЩИЙ ГЕЙМЕРСКИЙ RGB-ИНТЕРФЕЙС (РАДУЖНАЯ ВОЛНА ПО РАМКАМ И ШКАЛАМ) === */
+@keyframes rgbWave {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes rgbBorder {
+  0%   { border-color: #ff2a55; box-shadow: inset 0 0 14px rgba(255,42,85,.25); }
+  25%  { border-color: #ffaa00; box-shadow: inset 0 0 14px rgba(255,170,0,.25); }
+  50%  { border-color: #00ff88; box-shadow: inset 0 0 14px rgba(0,255,136,.25); }
+  75%  { border-color: #00d0ff; box-shadow: inset 0 0 14px rgba(0,208,255,.25); }
+  100% { border-color: #ff2a55; box-shadow: inset 0 0 14px rgba(255,42,85,.25); }
+}
+
+/* Радужные переливающиеся рамки карточек и ячеек */
+.crt-screen.rgb-mode .card,
+.crt-screen.rgb-mode .sk-mod,
+.crt-screen.rgb-mode .pill,
+.crt-screen.rgb-mode .mtr,
+.crt-screen.rgb-mode .tag,
+.crt-screen.rgb-mode .art {
+  animation: rgbBorder 5s linear infinite;
+}
+
+/* Бегущий многоцветный градиент на заголовках и шкалах прогресса */
+.crt-screen.rgb-mode .ttl,
+.crt-screen.rgb-mode .mtr-fill,
+.crt-screen.rgb-mode .boot-fill {
+  background: linear-gradient(90deg, #ff2a55, #ffaa00, #39ff5a, #00d0ff, #b84dff, #ff2a55);
+  background-size: 300% 100%;
+  animation: rgbWave 4s linear infinite;
+  color: #ffffff;
+  text-shadow: 0 1px 3px #000;
+  border-color: rgba(255,255,255,.4);
+}
+
+/* === СТИЛИЗОВАННЫЙ ТОНКИЙ СКРОЛЛБАР В ЦВЕТ ЭКРАНА === */
+#jsTxt, textarea {
+  scrollbar-width: thin;
+  scrollbar-color: var(--gd) var(--bg);
+}
+
+#jsTxt::-webkit-scrollbar, textarea::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+#jsTxt::-webkit-scrollbar-track, textarea::-webkit-scrollbar-track {
+  background: var(--bg);
+  border-left: 1px solid var(--gd);
+}
+
+#jsTxt::-webkit-scrollbar-thumb, textarea::-webkit-scrollbar-thumb {
+  background: var(--gd);
+  border-radius: 2px;
+}
+
+#jsTxt::-webkit-scrollbar-thumb:hover, textarea::-webkit-scrollbar-thumb:hover {
+  background: var(--g);
+  box-shadow: 0 0 6px var(--g);
+}
+/* === РЕАЛИСТИЧНЫЙ CRT-СБОЙ РАЗВЁРТКИ И ПОМЕХИ РАДИАЦИИ === */
+@keyframes crtTear {
+  0%   { clip-path: inset(0 0 0 0); transform: translate(0); }
+  10%  { clip-path: inset(12% 0 65% 0); transform: translate(-6px, 0); }
+  20%  { clip-path: inset(75% 0 5% 0); transform: translate(7px, 0); }
+  30%  { clip-path: inset(35% 0 40% 0); transform: translate(-4px, 2px); }
+  40%  { clip-path: inset(0 0 0 0); transform: translate(0); }
+  65%  { clip-path: inset(50% 0 20% 0); transform: translate(8px, -1px); }
+  75%  { clip-path: inset(5% 0 80% 0); transform: translate(-7px, 0); }
+  100% { clip-path: inset(0 0 0 0); transform: translate(0); }
+}
+
+@keyframes scanNoise {
+  0%   { background-position: 0 0, 0 0; }
+  100% { background-position: 0 100px, 0 -100px; }
+}
+
+/* Разрыв RGB-каналов у всего текста и горизонтальные рваные сдвиги экрана */
+.crt-screen.glitch-mode .screen-content {
+  animation: crtTear 0.25s steps(1) infinite;
+  text-shadow: -2.5px 0 rgba(255, 0, 60, 0.85), 2.5px 0 rgba(0, 240, 255, 0.85) !important;
+  filter: contrast(1.45) brightness(1.15);
+}
+
+/* Бегущий «снег» и полосы помех поверх экрана */
+.crt-screen.glitch-mode::after {
+  content: '';
+  position: absolute; inset: 0; z-index: 25; pointer-events: none;
+  background-image:
+    repeating-linear-gradient(0deg, rgba(255,255,255,0.14) 0px, rgba(255,255,255,0.14) 2px, transparent 2px, transparent 9px),
+    radial-gradient(rgba(255,255,255,0.25) 1px, transparent 0);
+  background-size: 100% 18px, 6px 6px;
+  animation: scanNoise 0.2s linear infinite;
+}
+
+/* Мигающая аварийная плашка */
+.crt-screen.glitch-mode::before {
+  content: '☢ СБОЙ МАТРИЦЫ // УДАРЬТЕ ПО КОРПУСУ ☢';
+  position: absolute; top: 12px; left: 50%; transform: translateX(-50%);
+  background: var(--red); color: #000; font-weight: 900; font-size: .72rem;
+  padding: 4px 12px; z-index: 30; letter-spacing: 1.2px; white-space: nowrap;
+  border: 1px solid #fff; box-shadow: 0 0 16px var(--red); pointer-events: none;
+}
+/* Запрещаем выделение текста на всех кнопках и тумблерах при быстрых кликах */
+button, .hw-btn, .rocker-btn, .rust-plate, .pip, .pill, .tag, .ttl {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+</style>
+</head>
+
+<body>
+<div id="tip"><img id="tImg"><div id="tTtl" style="font-weight:700;margin-bottom:3px;"></div><div id="tDsc" style="font-size:.75rem;white-space:pre-wrap;"></div></div>
+
+<div class="pb-case">
+  <div class="top-deck">
+    <div style="display:flex;align-items:center;gap:6px;">
+      <span class="screw"></span>
+      <div class="rust-plate" onclick="if(!cfgOpen) cycleCase()" style="cursor:pointer;" title="Кликните, чтобы сменить материал корпуса">
+        <span class="lbl-edit" id="lbl-brand" onclick="if(cfgOpen) editLabel(event,'ui','brand')">PIP-BUCK</span>
+        <span class="model-tag">MK-I</span>
+      </div>
+    </div>
+
+    <div style="display:flex;align-items:center;gap:6px;">
+      <div class="switch-bank">
+        <div class="top-slot" id="slot-json"><button class="hw-btn" id="btn-json" onclick="openJson()" title="Запись и чтение данных на голодиск">ГОЛОДИСК</button></div>
+        <div class="top-slot" id="slot-lk"><button class="hw-btn" id="lk-rst" onclick="togLk('rst')" title="Блокировка сброса">🔓</button></div>
+        <div class="top-slot" id="slot-rst"><button class="hw-btn danger" id="btn-rst" onclick="doReset()">СБРОС</button></div>
+      </div>
+      <span class="screw"></span>
+    </div>
+  </div>
+
+  <div class="mid-deck">
+    <div class="wheel-housing" title="Колесо прокрутки терминала">
+      <div class="wheel-drum" id="pipWheel"></div>
+    </div>
+
+    <div class="crt-bezel">
+      <div class="crt-screen" id="crtScreen">
+                <div class="screen-reflection"><div class="glass-glare"></div></div>
+
+        <div class="boot-overlay" id="bootScreen">
+          <div style="font-weight:900;">*** PIP-BUCK 3000 [BIOS v42.404] ***</div>
+          <div id="bootLog" style="font-size:.78rem;line-height:1.6;"></div>
+          <div class="boot-bar"><div class="boot-fill" id="bootFill"></div></div>
+        </div>
+        <div class="screen-content" id="screenContent">
+          <div class="cfg-banner">
+            <span>⚙️ ЖМИТЕ НА НАЗВАНИЯ/СМАЙЛИКИ (✎), БЛОКИ (▲▼⇄) И ШКАЛЫ (-/+)</span>
+            <div style="display:flex;gap:5px;flex-wrap:wrap;"><button class="cfg-btn" onclick="resetLabels()">[ СБРОСИТЬ ТЕКСТЫ ]</button><button class="cfg-btn" onclick="resetLayout()">[ СБРОСИТЬ СЕТКУ ]</button></div>
+          </div>
+          <div class="grid"><div class="col" id="col-left"></div><div class="col" id="col-right"></div></div>
+
+<div class="mbg" id="lblMdl" onclick="if(event.target===this) closeLblEd()">
+  <div class="mdl">
+    <div class="ttl" style="margin:0;"><span style="font-weight:800;color:var(--amb);">[ ПЕРЕИМЕНОВАНИЕ ]</span><small>КЛИК ВНЕ ОКНА — СОХРАНИТЬ</small></div>
+    <div style="display:flex;gap:4px;">
+      <input type="text" id="lblInp" style="flex:1;" placeholder="Новое название и смайлик..." onkeydown="if(event.key==='Enter') closeLblEd()">
+      <button type="button" onclick="openArtPick('lbl')">[ 😀 ]</button>
+    </div>
+    <button onclick="closeLblEd()">[ ГОТОВО ]</button>
+  </div>
+</div>
+
+<div class="mbg" id="edMdl" onclick="if(event.target===this) closeEd()">
+  <div class="mdl">
+    <div class="ttl" style="margin:0;"><span id="edTtl" style="font-weight:800;"></span><button style="padding:1px 6px;" onclick="closeEd()">✕</button></div>
+    <input type="text" id="edVal" placeholder="Введите значение...">
+    <textarea id="edDsc" placeholder="Описание (при наведении)..."></textarea>
+    <img id="edPrev" style="width:100%;max-height:140px;object-fit:cover;display:none;">
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <div><button onclick="openArtPick('ed')">[ + АРТ ]</button><button class="red" id="edDelImg" style="display:none;" onclick="ed.a='';updEdImg()">✕</button></div>
+      <small id="edImgSt">НЕТ АРТА</small>
+    </div>
+  </div>
+</div>
+
+<div class="mbg" id="artPickMdl" onclick="if(event.target===this) closeArtPick()">
+  <div class="mdl" style="max-width:300px;">
+    <div class="ttl" style="margin:0;"><span style="font-weight:800;color:var(--amb);">[ ВЫБОР АРТА ]</span><button style="padding:1px 6px;" onclick="closeArtPick()">✕</button></div>
+    <div style="display:flex;gap:4px;">
+      <button id="tabBtn-file" onclick="switchArtTab('file')" style="flex:1;padding:3px;">[ ФАЙЛ ]</button>
+      <button id="tabBtn-url" onclick="switchArtTab('url')" style="flex:1;padding:3px;">[ ССЫЛКА ]</button>
+      <button id="tabBtn-emo" onclick="switchArtTab('emo')" style="flex:1;padding:3px;">[ СМАЙЛ ]</button>
+    </div>
+    <div id="artTab-file" class="art-tab">
+      <button style="width:100%;padding:8px;" onclick="document.getElementById('fUniversal').click()">[ ВЫБРАТЬ С ПК ]</button>
+      <input type="file" id="fUniversal" accept="image/*" style="display:none" onchange="handleUniversalFile(event)">
+    </div>
+    <div id="artTab-url" class="art-tab" style="display:none;">
+      <input type="url" id="artUrlInp" placeholder="https://..." style="margin-bottom:6px;width:100%;background:var(--bg);border:1px solid var(--g);color:var(--g);padding:8px;">
+      <div id="artUrlErr" style="color:var(--red);font-size:.7rem;margin-bottom:4px;display:none;"></div>
+      <button style="width:100%;padding:5px;" onclick="applySafeArtUrl()">[ ВСТАВИТЬ ССЫЛКУ ]</button>
+    </div>
+    <div id="artTab-emo" class="art-tab" style="display:none;">
+      <div style="display:flex;gap:4px;margin-bottom:6px;">
+        <input type="text" id="customEmoInp" placeholder="Вставьте любой смайл..." style="flex:1;" onkeydown="if(event.key==='Enter') applyCustomEmo()">
+        <button type="button" onclick="applyCustomEmo()">[ ОК ]</button>
+      </div>
+      <div id="emoGrid" style="display:grid;grid-template-columns:repeat(6,1fr);gap:3px;max-height:110px;overflow-y:auto;padding:3px;border:1px solid var(--gd);text-align:center;"></div>
+    </div>
+  </div>
+</div>
+
+<div class="mbg" id="jsMdl" onclick="if(event.target===this) closeJson()">
+  <div class="mdl">
+    <div class="ttl" style="margin:0;"><span>[ ДАННЫЕ ГОЛОДИСКА ]</span><button style="padding:1px 6px;" onclick="closeJson()">✕</button></div>
+    <textarea id="jsTxt" style="min-height:130px;font-size:.72rem;" placeholder="Вставьте JSON..."></textarea>
+    <div style="display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end;">
+      <button id="btnCp" onclick="cpJson()">[ КОПИРОВАТЬ ]</button>
+      <button id="btnDl" onclick="dlJson()">[ СКАЧАТЬ ]</button>
+      <button id="btnLd" onclick="ldJson()">[ ПРИМЕНИТЬ ]</button>
+      <button onclick="document.getElementById('fImp').click()">[ ФАЙЛ ]</button>
+      <input type="file" id="fImp" accept=".json,application/json" style="display:none" onchange="importFile(event)">
+    </div>
+  </div>
+</div>
+       </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bottom-deck">
+    <div style="display:flex;align-items:center;gap:8px;">
+      <span class="screw"></span>
+      <div class="rotary-mini" id="rotaryKnob" onclick="cycleTheme()" title="Переключатель цвета люминофора"></div>
+    </div>
+
+    <div class="rocker-bank">
+      <div class="rocker-slot"><button class="rocker-btn lit" id="mechPwrBtn" onclick="togglePower()" title="Питание терминала">POWER</button></div>
+      <div class="rocker-slot"><button class="rocker-btn" onclick="auxRound(this,'DATA')" title="Модуль данных">DATA</button></div>
+      <div class="rocker-slot"><button class="rocker-btn" onclick="auxRound(this,'RADIO')" title="Радиомодуль">RADIO</button></div>
+    </div>
+
+    <div class="grill-slots"><i></i><i></i><i></i><i></i><i></i></div>
+
+    <div style="display:flex;align-items:center;gap:8px;">
+      <button class="cfg-screw" id="btnCfg" onclick="toggleCfg()" title="Сервисная настройка">⚙ CFG</button>
+      <span class="screw"></span>
+    </div>
+  </div>
+</div>
+
+<div id="block-pool" style="display:none;">
+  <div class="card" id="blk-profile">
+    <div class="ttl"><span class="lbl-edit" id="lbl-blk-profile" onclick="editLabel(event,'blk','profile')">[📁 ПРОФИЛЬ ]</span><div class="ttl-right"><span class="cfg-ctrls"><button class="cfg-btn" onclick="moveBlk('profile',-1)">▲</button><button class="cfg-btn" onclick="moveBlk('profile',1)">▼</button><button class="cfg-btn" onclick="swapBlk('profile')">⇄</button></span><button class="lk" id="lk-art" onclick="togLk('art')">🔓 АРТ</button></div></div>
+    <div class="prof">
+      <div class="art-col">
+        <div class="art" id="artBox" onclick="if(!st.lk.art) openArtPick('main')">[ ЗАГРУЗИТЬ АРТ ]</div>
+
+        <button class="red" id="btnDelArt" style="display:none;padding:3px;" onclick="st.art='';save();draw()">[ УДАЛИТЬ АРТ ]</button>
+        <input type="file" id="fMain" accept="image/*" style="display:none" onchange="upImg(event,r=>{st.art=r;save();draw()})">
+      </div>
+     <div class="bio" id="bioBox"></div>
+    </div>
+  </div>
+
+  <div class="card" id="blk-skills">
+    <div class="ttl"><span class="lbl-edit" id="lbl-blk-skills" onclick="editLabel(event,'blk','skills')">[📋 НАВЫКИ]</span><div class="ttl-right"><span class="cfg-ctrls"><button class="cfg-btn" onclick="moveBlk('skills',-1)">▲</button><button class="cfg-btn" onclick="moveBlk('skills',1)">▼</button><button class="cfg-btn" onclick="swapBlk('skills')">⇄</button></span><span style="white-space:nowrap;"><span class="lbl-edit" id="lbl-ui-base" onclick="editLabel(event,'ui','base')">БАЗА</span> [<span id="skUsed" style="font-weight:900;">0</span>/<input class="base-in" id="skBase" oninput="onBaseInput()">]</span></div></div>
+    <div class="sk-list" id="skBox"></div>
+  </div>
+  <div class="card" id="blk-meters">
+    <div class="ttl"><span class="lbl-edit" id="lbl-blk-meters" onclick="editLabel(event,'blk','meters')">[🩺 ИНДИКАТОРЫ СОСТОЯНИЯ ]</span><div class="ttl-right"><span class="cfg-ctrls"><button class="cfg-btn" onclick="moveBlk('meters',-1)">▲</button><button class="cfg-btn" onclick="moveBlk('meters',1)">▼</button><button class="cfg-btn" onclick="swapBlk('meters')">⇄</button></span></div></div>
+    <div id="mtrBox"></div>
+  </div>
+  <div class="card" id="blk-tags">
+    <div class="ttl"><span class="lbl-edit" id="lbl-blk-tags" onclick="editLabel(event,'blk','tags')">[📍 АКТИВНЫЕ ТЕГИ ]</span><div class="ttl-right"><span class="cfg-ctrls"><button class="cfg-btn" onclick="moveBlk('tags',-1)">▲</button><button class="cfg-btn" onclick="moveBlk('tags',1)">▼</button><button class="cfg-btn" onclick="swapBlk('tags')">⇄</button></span><button class="lk" id="lk-tag" onclick="togLk('tag')">🔓 ТЕГИ</button></div></div>
+    <div id="tagBox"></div>
+  </div>
+  <div class="card" id="blk-notes">
+    <div class="ttl"><span class="lbl-edit" id="lbl-blk-notes" onclick="editLabel(event,'blk','notes')">[📝 БОРТОВОЙ ЖУРНАЛ ]</span><div class="ttl-right"><span class="cfg-ctrls"><button class="cfg-btn" onclick="moveBlk('notes',-1)">▲</button><button class="cfg-btn" onclick="moveBlk('notes',1)">▼</button><button class="cfg-btn" onclick="swapBlk('notes')">⇄</button></span><button class="lk" id="lk-not" onclick="togLk('not')">🔓 ЗАПИСЬ</button></div></div>
+    <textarea id="notes" placeholder="> Заметки..." oninput="save()"></textarea>
+  </div>
+</div>
+<script>
+const BIO=[{k:'name',l:'Имя'},{k:'race',l:'Родословная'},{k:'comm',l:'Сообщества'},{k:'nat',l:'Натура'},{k:'mask',l:'Маска'},{k:'code',l:'Кодекс'},{k:'bond',l:'Узы'},{k:'exp',l:'Прошлый опыт'}];
+const MTR=[{k:'ego',l:'🕊️ Эго'},{k:'elem',l:'🌈 Элемент'},{k:'cond',l:'💘 Состояние'}];
+const TGR=[{k:'st',l:'Теги состояния'},{k:'ch',l:'Теги персонажа'},{k:'eq',l:'Теги экипировки'}];
+const SKL=[{k:'phys',n:'🥋 ФИЗ. ПОДГОТОВКА'},{k:'surv',n:'🏕️ ВЫЖИВАНИЕ'},{k:'stea',n:'🐱‍👤 СКРЫТНОСТЬ'},{k:'invs',n:'👀 ИССЛЕДОВАНИЕ'},{k:'scie',n:'🔬 НАУКА'},{k:'repa',n:'🛠️ РЕМОНТ'},{k:'medi',n:'⛑️ МЕДИЦИНА'},{k:'myst',n:'🔮 МИСТИКА'},{k:'fort',n:'🍀 ФОРТУНА'}];
+const DEF_BLK={profile:'[📁 ПРОФИЛЬ ]',skills:'[📋 НАВЫКИ]',meters:'[🩺 ИНДИКАТОРЫ СОСТОЯНИЯ ]',tags:'[📍 АКТИВНЫЕ ТЕГИ ]',notes:'[📝 БОРТОВОЙ ЖУРНАЛ ]'};
+const DEF_UI={brand:'PIP-BUCK',base:'БАЗА'};
+const THEMES = [
+  // 1. Классический мягкий зелёный
+  { g: '#48f068', gd: '#185224', bg: '#040a05', panel: '#08140a', box: '#0d1f11', glow: 'rgba(72,240,104,.16)' },
+  // 2. Тёплый янтарный Нью-Вегас
+  { g: '#ff9d1c', gd: '#6b3e06', bg: '#0b0602', panel: '#140c04', box: '#1f1307', glow: 'rgba(255,157,28,.16)' },
+  // 3. Жёлтый золотистый люминофор
+  { g: '#ffe135', gd: '#695b0d', bg: '#0a0902', panel: '#141205', box: '#1f1c09', glow: 'rgba(255,225,53,.15)' },
+  // 4. Приглушённый ледяной Волт-Тек
+  { g: '#5ce1ff', gd: '#1a4c59', bg: '#03080b', panel: '#071217', box: '#0c1c24', glow: 'rgba(92,225,255,.15)' },
+  // 5. Неоново-фиолетовый
+  { g: '#c86bff', gd: '#4d1f69', bg: '#08030b', panel: '#110717', box: '#1b0c24', glow: 'rgba(200,107,255,.16)' },
+  // 6. Мягкий белый монохром (тёплый слоновая кость)
+  { g: '#c5d1c8', gd: '#3d4740', bg: '#090b0a', panel: '#111412', box: '#191f1c', glow: 'rgba(197,209,200,.10)' },
+  // 7. Алый / Лазерный красный
+  { g: '#ff4d5a', gd: '#6e1920', bg: '#0d0304', panel: '#170608', box: '#240a0c', glow: 'rgba(255,77,90,.16)' },
+  // 8. Бирюзовый / Неоновый циан
+  { g: '#2ef2d0', gd: '#115e51', bg: '#030a09', panel: '#061412', box: '#0b211e', glow: 'rgba(46,242,208,.16)' },
+  // 9. Королевский кобальт / Глубокий синий
+  { g: '#4d88ff', gd: '#1a3875', bg: '#03060d', panel: '#060c1a', box: '#0b152b', glow: 'rgba(77,136,255,.16)' },
+  // 10. Неоново-розовый / Маджента
+  { g: '#ff5ca8', gd: '#6b1d42', bg: '#0c0307', panel: '#17060e', box: '#240a16', glow: 'rgba(255,92,168,.16)' },
+  // 11. Кораллово-персиковый / Закат Мохаве
+  { g: '#ff8577', gd: '#6e2c24', bg: '#0d0504', panel: '#170a08', box: '#24100d', glow: 'rgba(255,133,119,.16)' },
+  // 12. Кислотно-лаймовый (Изотоп)
+  { g: '#a3ff33', gd: '#3d660d', bg: '#060a02', panel: '#0c1404', box: '#142107', glow: 'rgba(163,255,51,.15)' },
+  // 13. Мягкая лаванда (Приглушённый сиреневый)
+  { g: '#b8a1ff', gd: '#443673', bg: '#07050d', panel: '#0f0c1a', box: '#171229', glow: 'rgba(184,161,255,.16)' },
+  // 14. Дневной режим: Состаренный пергамент (тёмно-коричневые чернила на тёплой бумаге)
+  { g: '#2b1d0e', gd: '#8c7254', bg: '#dfd1b8', panel: '#e8dcc5', box: '#d1c1a5', glow: 'rgba(139, 90, 43, 0.14)', eink: true },
+  // 15. Переливающийся RGB-спектр (Геймерский режим)
+  { g: '#ff4d5a', gd: '#6e1920', bg: '#080406', panel: '#12070c', box: '#1f0b14', glow: 'rgba(255,77,90,.18)', rgb: true }
+];
+
+const defLayout=()=>({left:['profile','skills'],right:['meters','tags','notes']});
+const def=()=>({art:'',notes:'',base:'',theme:0,caseStyle:0,bio:{},mtr:{},tags:{st:[],ch:[],eq:[]},skl:{},lk:{art:false,tag:false,not:false,rst:false},layout:defLayout(),labels:{blk:{},bio:{},skl:{},mtr:{},tgr:{},ui:{}}});
+let st=def(),ed=null,lblEd=null,rstT=null,cfgOpen=false,screenOn=true,booting=false;
+
+function applyTheme(){
+  const idx=(st.theme||0)%THEMES.length,t=THEMES[idx],r=document.documentElement.style;
+  r.setProperty('--g',t.g);r.setProperty('--gd',t.gd);r.setProperty('--bg',t.bg);
+  r.setProperty('--panel',t.panel);r.setProperty('--box',t.box);r.setProperty('--glow',t.glow);
+  
+  // Включаем или выключаем плавный RGB-перелив экрана и индикатора
+  const scr=document.getElementById('crtScreen');
+  const knob=document.getElementById('rotaryKnob');
+  if (scr) scr.classList.toggle('rgb-mode', !!t.rgb);
+  if (scr) scr.classList.toggle('eink-mode', !!t.eink);
+  if (knob) {
+    knob.classList.toggle('rgb-mode', !!t.rgb);
+    knob.style.transform = `rotate(${(st.theme || 0) * (360 / THEMES.length)}deg)`;
+  }
+}
+
+function cycleTheme(){
+  if(!screenOn||booting)return;
+  st.theme=((st.theme||0)+1)%THEMES.length;
+  applyTheme();save();
+}
+const CASE_TAGS = [
+  'MK-I', 'GEM-7', 'v20.77', 'MIL-88', 'GLaDOS', '98-CLR', 'AUG-X', '1959',
+  'MUTHUR', '53', 'ASHPD', 'PORTAL', 'Синтвейв', 'RUNE', 'FORGE', 'JADE',
+  'MEDIC', 'Black Gold', 'Weve', 'ANIMUS', 'AU-999'
+];
+
+
+function applyCase() {
+  const el = document.querySelector('.pb-case');
+  if (!el) return;
+  for (let i = 1; i <= 20; i++) el.classList.remove('case-' + i);
+  const idx = (st.caseStyle || 0) % CASE_TAGS.length;
+  if (idx > 0) el.classList.add('case-' + idx);
+  const tag = el.querySelector('.model-tag');
+  if (tag) tag.textContent = CASE_TAGS[idx];
+}
+
+function cycleCase() {
+  st.caseStyle = ((st.caseStyle || 0) + 1) % CASE_TAGS.length;
+  applyCase();
+  save();
+}
+
+
+
+function getLbl(c,k,fb){return(st.labels&&st.labels[c]&&st.labels[c][k])?st.labels[c][k]:fb}
+function editLabel(e,c,k){
+  if(!cfgOpen||!screenOn||booting)return;e.stopPropagation();
+  let cur=c==='blk'?getLbl('blk',k,DEF_BLK[k]):c==='ui'?getLbl('ui',k,DEF_UI[k]):c==='bio'?getLbl('bio',k,BIO.find(x=>x.k===k).l):c==='skl'?getLbl('skl',k,SKL.find(x=>x.k===k).n):c==='mtr'?getLbl('mtr',k,MTR.find(x=>x.k===k).l):getLbl('tgr',k,TGR.find(x=>x.k===k).l);
+  lblEd={c,k};const inp=document.getElementById('lblInp');inp.value=cur;document.getElementById('lblMdl').style.display='flex';inp.focus();inp.select();
+}
+
+function closeLblEd(){
+  if(!lblEd)return;const val=document.getElementById('lblInp').value.trim();
+  if(!st.labels)st.labels={blk:{},bio:{},skl:{},mtr:{},tgr:{},ui:{}};if(!st.labels[lblEd.c])st.labels[lblEd.c]={};
+  if(val)st.labels[lblEd.c][lblEd.k]=val;else delete st.labels[lblEd.c][lblEd.k];
+  lblEd=null;document.getElementById('lblMdl').style.display='none';save();draw();
+}
+function resetLabels(){st.labels={blk:{},bio:{},skl:{},mtr:{},tgr:{},ui:{}};save();draw()}
+
+function auxRound(btn, orig) {
+  if (!screenOn || booting) return;
+  btn.classList.add('lit');
+  btn.textContent = 'EMPTY';
+  setTimeout(() => {
+    btn.classList.remove('lit');
+    btn.textContent = orig;
+  }, 900);
+}
+
+let wheelAngle=0,wheelVel=0,wheelAnim=null;
+function renderWheel(){const w=document.getElementById('pipWheel');if(w)w.style.backgroundPosition=`0px 0px, 0px ${wheelAngle%20}px`}
+function syncWheel(){const sc=document.getElementById('screenContent');if(!sc)return;wheelAngle=sc.scrollTop*0.55;renderWheel()}
+document.getElementById('screenContent').addEventListener('scroll',syncWheel,{passive:true});
+
+(function(){
+  const w=document.getElementById('pipWheel'),sc=document.getElementById('screenContent');
+  let drag=false,lastY=0,lastT=0;
+  function coast(){
+    if(drag||Math.abs(wheelVel)<0.15){wheelAnim=null;return}
+    sc.scrollTop+=wheelVel;wheelAngle+=wheelVel*0.55;renderWheel();wheelVel*=0.92;
+    wheelAnim=requestAnimationFrame(coast);
+  }
+  w.addEventListener('pointerdown',e=>{drag=true;lastY=e.clientY;lastT=performance.now();wheelVel=0;if(wheelAnim){cancelAnimationFrame(wheelAnim);wheelAnim=null}w.setPointerCapture(e.pointerId)});
+  w.addEventListener('pointermove',e=>{if(!drag)return;const now=performance.now(),dy=e.clientY-lastY,dt=Math.max(1,now-lastT),step=dy*2.4;sc.scrollTop+=step;wheelAngle+=step*0.55;renderWheel();wheelVel=(step/dt)*16;lastY=e.clientY;lastT=now});
+  w.addEventListener('pointerup',e=>{drag=false;try{w.releasePointerCapture(e.pointerId)}catch(err){}if(Math.abs(wheelVel)>0.5)wheelAnim=requestAnimationFrame(coast)});
+})();
+
+function togglePower(){
+  if(booting)return;const scr=document.getElementById('crtScreen'),btn=document.getElementById('mechPwrBtn'),boot=document.getElementById('bootScreen'),log=document.getElementById('bootLog'),fill=document.getElementById('bootFill');
+  if(screenOn){
+    screenOn=false;document.getElementById('tip').style.display='none';document.getElementById('jsMdl').style.display='none';document.getElementById('edMdl').style.display='none';document.getElementById('lblMdl').style.display='none';document.getElementById('artPickMdl').style.display='none';ed=null;lblEd=null;
+    btn.classList.remove('lit');scr.classList.remove('crt-flash');scr.classList.add('off-state');
+  }else{
+    booting=true;btn.classList.add('lit');
+    setTimeout(()=>{
+      scr.classList.remove('off-state');scr.classList.add('crt-flash');boot.style.display='flex';log.innerHTML='';fill.style.width='0%';
+      [{t:250,p:'25%',x:'> КТО ТЫ ВОИН?'},{t:750,p:'55%',x:'> ПРОВЕРКА СИСТЕМЫ...'},{t:1250,p:'85%',x:'> ЗАГРУЗКА ПРОФИЛЯ...'},{t:1650,p:'100%',x:'> СИСТЕМА ГОТОВА.'}].forEach(s=>setTimeout(()=>{log.innerHTML+=`<div>${s.x}</div>`;fill.style.width=s.p},s.t));
+      setTimeout(()=>{boot.style.display='none';screenOn=true;booting=false;syncWheel()},2150);
+    },250);
+  }
+}
+
+let saveTimer = null;
+function save() {
+  st.notes = document.getElementById('notes').value;
+  st.base = document.getElementById('skBase').value;
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => {
+    try { localStorage.setItem('pb_os_v27', JSON.stringify(st)); } catch (e) {}
+  }, 400);
+}
+function updSkillCap(){
+  const raw=document.getElementById('skBase').value.trim(),baseVal=raw===''?null:Math.max(0,parseInt(raw,10)||0);
+  let used=0;
+  SKL.forEach(item=>{
+    let v=parseInt(st.skl[item.k],10)||0;if(v<0)v=0;
+    if(baseVal!==null&&used+v>baseVal){v=Math.max(0,baseVal-used);st.skl[item.k]=v?String(v):''}
+    used+=v;
+  });
+  const uEl=document.getElementById('skUsed');
+  if(uEl){uEl.textContent=used;uEl.style.color=(baseVal!==null&&used>=baseVal)?'var(--amb)':'var(--g)'}
+}
+
+function onBaseInput(){updSkillCap();save();draw()}
+function onSkillInput(k,el){
+  let v=parseInt(el.value,10);
+  if(isNaN(v)||v<0){st.skl[k]='';el.value='';updSkillCap();save();return}
+  const raw=document.getElementById('skBase').value.trim(),baseVal=raw===''?null:Math.max(0,parseInt(raw,10)||0);
+  if(baseVal!==null){let other=0;SKL.forEach(item=>{if(item.k!==k)other+=(parseInt(st.skl[item.k],10)||0)});const maxA=Math.max(0,baseVal-other);if(v>maxA)v=maxA}
+  st.skl[k]=String(v);el.value=String(v);updSkillCap();save();
+}
+function stepSkill(k,d){
+  const cur=parseInt(st.skl[k],10)||0,next=Math.max(0,cur+d),inp=document.getElementById('sk-in-'+k);
+  if(inp){inp.value=next?String(next):'';onSkillInput(k,inp)}
+}
+function toggleCfg(){if(screenOn&&!booting){cfgOpen=!cfgOpen;document.body.classList.toggle('cfg-mode',cfgOpen);document.getElementById('btnCfg').classList.toggle('active',cfgOpen)}}
+function renderLayout(){if(!st.layout||!st.layout.left||!st.layout.right)st.layout=defLayout();const l=document.getElementById('col-left'),r=document.getElementById('col-right');st.layout.left.forEach(id=>{const el=document.getElementById('blk-'+id);if(el)l.appendChild(el)});st.layout.right.forEach(id=>{const el=document.getElementById('blk-'+id);if(el)r.appendChild(el)});syncWheel()}
+function moveBlk(id,d){
+  if(window.innerWidth<=900){
+    const all=[...st.layout.left,...st.layout.right],i=all.indexOf(id),t=i+d;
+    if(t>=0&&t<all.length){all.splice(i,1);all.splice(t,0,id);const sp=Math.min(st.layout.left.length,all.length);st.layout.left=all.slice(0,sp);st.layout.right=all.slice(sp);save();renderLayout()}
+    return;
+  }
+  const s=st.layout.left.includes(id)?'left':'right',a=st.layout[s],i=a.indexOf(id),t=i+d;
+  if(t>=0&&t<a.length){a.splice(i,1);a.splice(t,0,id);save();renderLayout()}
+}
+function swapBlk(id){const f=st.layout.left.includes(id)?'left':'right',t=f==='left'?'right':'left';st.layout[f]=st.layout[f].filter(x=>x!==id);st.layout[t].push(id);save();renderLayout()}
+function resetLayout(){st.layout=defLayout();save();renderLayout()}
+function chMax(k,d){const it=st.mtr[k],m=Math.max(1,Math.min(10,(it.max||5)+d));it.max=m;if(it.c>m)it.c=m;save();draw()}
+function togLk(k){st.lk[k]=!st.lk[k];save();draw()}
+function draw() {
+  renderLayout();
+  Object.keys(DEF_BLK).forEach(k => {
+    const el = document.getElementById('lbl-blk-' + k);
+    if (el) el.textContent = getLbl('blk', k, DEF_BLK[k]);
+  });
+  Object.keys(DEF_UI).forEach(k => {
+    const el = document.getElementById('lbl-' + (k === 'brand' ? 'brand' : 'ui-' + k));
+    if (el) el.textContent = getLbl('ui', k, DEF_UI[k]);
+  });
+  ['art', 'tag', 'not', 'rst'].forEach(k => {
+    const b = document.getElementById('lk-' + k), on = !!st.lk[k];
+    if (k === 'rst') {
+      b.className = 'hw-btn' + (on ? ' on' : '');
+      b.textContent = on ? '🔒' : '🔓';
+      document.getElementById('btn-rst').disabled = on;
+    } else {
+      b.className = 'lk' + (on ? ' on' : '');
+      b.textContent = (on ? '🔒 ' : '🔓 ') + (k === 'art' ? 'АРТ' : k === 'tag' ? 'ТЕГИ' : 'ЗАПИСЬ');
+    }
+  });
+  const ab = document.getElementById('artBox');
+ab.innerHTML = '';
+if (st.art) {
+  if (st.art.startsWith('emo:')) {
+    const sp = document.createElement('span');
+    sp.style.fontSize = '4.8rem';
+    sp.textContent = st.art.slice(4);
+    ab.appendChild(sp);
+  } else {
+    const img = document.createElement('img');
+    img.referrerPolicy = 'no-referrer';
+    img.src = st.art;
+    img.onerror = () => { ab.textContent = '[ ОШИБКА ЗАГРУЗКИ ]'; };
+    ab.appendChild(img);
+  }
+} else {
+  ab.textContent = st.lk.art ? '[ ЗАБЛОКИРОВАНО ]' : '[ ЗАГРУЗИТЬ АРТ ]';
+}
+
+  document.getElementById('btnDelArt').style.display = (!st.lk.art && st.art) ? 'block' : 'none';
+  const nt = document.getElementById('notes');
+  nt.value = st.notes || '';
+  nt.readOnly = !!st.lk.not;
+  document.getElementById('skBase').value = st.base || '';
+  const bb = document.getElementById('bioBox');
+  bb.innerHTML = '';
+  BIO.forEach(item => {
+    if (!st.bio[item.k]) st.bio[item.k] = { v: '', d: '', a: '' };
+    const it = st.bio[item.k], lbl = getLbl('bio', item.k, item.l);
+    const d = document.createElement('div');
+    d.className = 'pill' + ((it.d || it.a) ? ' ex' : '');
+    d.addEventListener('click', () => { if (!cfgOpen) openEd('bio', item.k); });
+    d.addEventListener('mouseenter', () => tip(it.v || lbl, it.d, it.a));
+    d.addEventListener('mouseleave', () => { document.getElementById('tip').style.display = 'none'; });
+
+    const sm = document.createElement('small');
+    const sp = document.createElement('span');
+    sp.className = 'lbl-edit';
+    sp.textContent = lbl;
+    sp.addEventListener('click', e => editLabel(e, 'bio', item.k));
+    sm.appendChild(sp);
+
+    const b = document.createElement('b');
+    b.style.opacity = it.v ? '1' : '.35';
+    b.textContent = it.v || '...';
+    d.append(sm, b);
+    bb.appendChild(d);
+  });
+
+  const sb = document.getElementById('skBox');
+  sb.innerHTML = '';
+  SKL.forEach(item => {
+    const lbl = getLbl('skl', item.k, item.n);
+    const d = document.createElement('div');
+    d.className = 'sk-mod';
+
+    const sp = document.createElement('span');
+    sp.className = 'sk-name lbl-edit';
+    sp.textContent = lbl;
+    sp.addEventListener('click', e => editLabel(e, 'skl', item.k));
+
+    const ctrl = document.createElement('div');
+    ctrl.className = 'sk-ctrl';
+
+    const btnMinus = document.createElement('button');
+    btnMinus.className = 'sk-step';
+    btnMinus.textContent = '-';
+    btnMinus.addEventListener('click', () => stepSkill(item.k, -1));
+
+    const inp = document.createElement('input');
+    inp.type = 'number';
+    inp.min = '0';
+    inp.id = 'sk-in-' + item.k;
+    inp.value = st.skl[item.k] || '';
+    inp.placeholder = '0';
+    inp.addEventListener('input', () => onSkillInput(item.k, inp));
+
+    const btnPlus = document.createElement('button');
+    btnPlus.className = 'sk-step';
+    btnPlus.textContent = '+';
+    btnPlus.addEventListener('click', () => stepSkill(item.k, 1));
+
+    ctrl.append(btnMinus, inp, btnPlus);
+    d.append(sp, ctrl);
+    sb.appendChild(d);
+  });
+  updSkillCap();
+  const mb = document.getElementById('mtrBox');
+  mb.innerHTML = '';
+  MTR.forEach(item => {
+    if (!st.mtr[item.k]) st.mtr[item.k] = { v: '', c: 0, max: 5, d: '', a: '' };
+    const it = st.mtr[item.k], lbl = getLbl('mtr', item.k, item.l), maxP = it.max || 5;
+    const pct = Math.max(0, Math.min(100, ((it.c || 0) / maxP) * 100));
+
+    const d = document.createElement('div');
+    d.className = 'mtr' + ((it.d || it.a) ? ' ex' : '');
+
+    const top = document.createElement('div');
+    top.className = 'mtr-top';
+
+    const left = document.createElement('div');
+    left.className = 'mtr-l';
+    left.addEventListener('click', () => { if (!cfgOpen) openEd('mtr', item.k); });
+    left.addEventListener('mouseenter', () => tip(it.v || lbl, it.d, it.a));
+    left.addEventListener('mouseleave', () => { document.getElementById('tip').style.display = 'none'; });
+
+    const bLbl = document.createElement('b');
+    bLbl.className = 'lbl-edit';
+    bLbl.textContent = lbl + ':';
+    bLbl.addEventListener('click', e => editLabel(e, 'mtr', item.k));
+
+    const spVal = document.createElement('span');
+    spVal.style.opacity = it.v ? '1' : '.4';
+    spVal.textContent = it.v || '...';
+    left.append(bLbl, spVal);
+
+    const pips = document.createElement('div');
+    pips.className = 'pips';
+    for (let i = 1; i <= maxP; i++) {
+      const pip = document.createElement('div');
+      pip.className = 'pip' + (i <= it.c ? ' on' : '');
+      pip.textContent = 'X';
+      pip.addEventListener('click', () => {
+        st.mtr[item.k].c = (st.mtr[item.k].c === i ? i - 1 : i);
+        save();
+        draw();
+      });
+      pips.appendChild(pip);
+    }
+
+    const ctrls = document.createElement('span');
+    ctrls.className = 'cfg-ctrls';
+    ctrls.style.marginLeft = '4px';
+    const bDec = document.createElement('button');
+    bDec.className = 'cfg-btn';
+    bDec.textContent = '-';
+    bDec.addEventListener('click', () => chMax(item.k, -1));
+    const bInc = document.createElement('button');
+    bInc.className = 'cfg-btn';
+    bInc.textContent = '+';
+    bInc.addEventListener('click', () => chMax(item.k, 1));
+    ctrls.append(bDec, bInc);
+    pips.appendChild(ctrls);
+
+    const bar = document.createElement('div');
+    bar.className = 'mtr-bar';
+    const fill = document.createElement('div');
+    fill.className = 'mtr-fill';
+    fill.style.width = pct + '%';
+    bar.appendChild(fill);
+
+    top.append(left, pips);
+    d.append(top, bar);
+    mb.appendChild(d);
+  });
+  const tb = document.getElementById('tagBox');
+  tb.innerHTML = '';
+  TGR.forEach(grp => {
+    if (!st.tags[grp.k]) st.tags[grp.k] = [];
+    const lbl = getLbl('tgr', grp.k, grp.l);
+
+    const hdr = document.createElement('div');
+    hdr.style.cssText = 'display:flex;justify-content:space-between;align-items:center;';
+
+    const sm = document.createElement('small');
+    sm.append('> ');
+    const spLbl = document.createElement('span');
+    spLbl.className = 'lbl-edit';
+    spLbl.textContent = lbl;
+    spLbl.addEventListener('click', e => editLabel(e, 'tgr', grp.k));
+    sm.append(spLbl, ':');
+    hdr.appendChild(sm);
+
+    if (!st.lk.tag) {
+      const bAdd = document.createElement('button');
+      bAdd.style.padding = '1px 6px';
+      bAdd.textContent = '+';
+      bAdd.addEventListener('click', () => openEd('tag', grp.k, -1));
+      hdr.appendChild(bAdd);
+    }
+
+    const wrap = document.createElement('div');
+    wrap.className = 'tags';
+    if (!st.tags[grp.k].length) {
+      wrap.innerHTML = '<small style="opacity:.35">[ ПУСТО ]</small>';
+    } else {
+      st.tags[grp.k].forEach((t, i) => {
+        const tag = document.createElement('span');
+        tag.className = 'tag' + ((t.d || t.a) ? ' ex' : '');
+        tag.addEventListener('click', () => { if (!cfgOpen) openEd('tag', grp.k, i); });
+        tag.addEventListener('mouseenter', () => tip(t.n, t.d, t.a));
+        tag.addEventListener('mouseleave', () => { document.getElementById('tip').style.display = 'none'; });
+
+        const spN = document.createElement('span');
+        spN.textContent = t.n;
+        tag.appendChild(spN);
+
+        if (!st.lk.tag) {
+          const bDel = document.createElement('b');
+          bDel.textContent = '×';
+          bDel.addEventListener('click', e => {
+            e.stopPropagation();
+            st.tags[grp.k].splice(i, 1);
+            save();
+            draw();
+          });
+          tag.appendChild(bDel);
+        }
+        wrap.appendChild(tag);
+      });
+    }
+    tb.append(hdr, wrap);
+  });
+}
+
+function openEd(t, k, i = -1) {
+  if (!screenOn || booting) return;
+  document.getElementById('tip').style.display = 'none';
+  ed = { t, k, i, a: '' };
+  const v = document.getElementById('edVal'), d = document.getElementById('edDsc'), ttl = document.getElementById('edTtl');
+  if (t === 'bio') {
+    const it = st.bio[k];
+    ttl.textContent = '[ ' + getLbl('bio', k, BIO.find(x => x.k === k).l) + ' ]';
+    v.value = it.v || ''; d.value = it.d || ''; ed.a = it.a || '';
+  }
+  if (t === 'mtr') {
+    const it = st.mtr[k];
+    ttl.textContent = '[ ' + getLbl('mtr', k, MTR.find(x => x.k === k).l) + ' ]';
+    v.value = it.v || ''; d.value = it.d || ''; ed.a = it.a || '';
+  }
+  if (t === 'tag') {
+    ttl.textContent = '[ ' + getLbl('tgr', k, TGR.find(x => x.k === k).l) + ' ]';
+    if (i >= 0 && st.tags[k][i]) {
+      const it = st.tags[k][i];
+      v.value = it.n || ''; d.value = it.d || ''; ed.a = it.a || '';
+    } else { v.value = ''; d.value = ''; }
+  }
+
+  updEdImg();
+  document.getElementById('edMdl').style.display = 'flex';
+  v.focus();
+}
+function updEdImg() {
+  const p = document.getElementById('edPrev'), s = document.getElementById('edImgSt'), b = document.getElementById('edDelImg');
+  if (ed && ed.a) {
+    p.referrerPolicy = 'no-referrer';
+    p.src = ed.a.startsWith('emo:') ? '' : ed.a;
+    p.style.display = ed.a.startsWith('emo:') ? 'none' : 'block';
+    s.textContent = ed.a.startsWith('emo:') ? ('СМАЙЛ: ' + ed.a.slice(4)) : 'АРТ ЗАГРУЖЕН';
+    b.style.display = 'inline-block';
+  } else {
+    p.style.display = 'none'; s.textContent = 'НЕТ АРТА'; b.style.display = 'none';
+  }
+}
+
+function closeEd() {
+  if (!ed) return;
+  const v = document.getElementById('edVal').value.trim(), d = document.getElementById('edDsc').value, a = ed.a;
+  if (ed.t === 'bio') st.bio[ed.k] = { v, d, a };
+  if (ed.t === 'mtr') st.mtr[ed.k] = { ...st.mtr[ed.k], v, d, a };
+  if (ed.t === 'tag' && v) {
+    const o = { n: v, d, a };
+    if (ed.i >= 0) st.tags[ed.k].splice(ed.i, 1, o); else st.tags[ed.k].push(o);
+  }
+  ed = null;
+  document.getElementById('edMdl').style.display = 'none';
+  save(); draw();
+}
+function upImg(e, cb) {
+  const f = e.target.files && e.target.files[0] ? e.target.files[0] : null;
+  if (!f) return;
+  const r = new FileReader();
+  r.onload = ev => cb(ev.target.result);
+  r.readAsDataURL(f);
+  e.target.value = '';
+}
+
+function tip(t, d, a) {
+  if (!screenOn || (!d && !a)) return;
+  const el = document.getElementById('tip'), im = document.getElementById('tImg');
+  document.getElementById('tTtl').textContent = t;
+  let emoBox = document.getElementById('tEmo');
+  if (!emoBox) {
+    emoBox = document.createElement('div');
+    emoBox.id = 'tEmo';
+    emoBox.style.cssText = 'font-size:2.6rem;text-align:center;margin-bottom:4px;';
+    im.parentNode.insertBefore(emoBox, im);
+  }
+  if (a && a.startsWith('emo:')) {
+    im.style.display = 'none'; emoBox.textContent = a.slice(4); emoBox.style.display = 'block';
+  } else if (a) {
+    emoBox.style.display = 'none'; im.referrerPolicy = 'no-referrer'; im.src = a; im.style.display = 'block';
+  } else {
+    emoBox.style.display = 'none'; im.style.display = 'none';
+  }
+  document.getElementById('tDsc').textContent = d || '';
+  el.style.display = 'block';
+}
+
+
+document.addEventListener('mousemove', e => {
+  const el = document.getElementById('tip');
+  if (el.style.display === 'block') {
+    el.style.left = Math.min(innerWidth - 270, e.clientX + 12) + 'px';
+    el.style.top = Math.min(innerHeight - 180, e.clientY + 12) + 'px';
+  }
+});
+function openJson() {
+  if (!screenOn || booting) return;
+  save();
+  document.getElementById('jsTxt').value = JSON.stringify(st, null, 2);
+  document.getElementById('jsMdl').style.display = 'flex';
+  document.getElementById('btn-json').classList.add('on');
+}
+function closeJson() {
+  document.getElementById('jsMdl').style.display = 'none';
+  document.getElementById('btn-json').classList.remove('on');
+}
+
+function cpJson() {
+  const el = document.getElementById('jsTxt'), b = document.getElementById('btnCp');
+  if (!el) return;
+
+  // Запасной классический способ копирования, который работает даже в локальных HTML-файлах (file://)
+  const fallbackCopy = () => {
+    el.focus();
+    el.select();
+    el.setSelectionRange(0, el.value.length);
+    try {
+      document.execCommand('copy');
+      b.textContent = '[ СКОПИРОВАНО! ]';
+    } catch (err) {
+      b.textContent = '[ ВЫДЕЛЕНО: CTRL+C ]';
+    }
+    setTimeout(() => b.textContent = '[ КОПИРОВАТЬ ]', 1800);
+  };
+
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(el.value).then(() => {
+      b.textContent = '[ СКОПИРОВАНО! ]';
+      setTimeout(() => b.textContent = '[ КОПИРОВАТЬ ]', 1500);
+    }).catch(fallbackCopy);
+  } else {
+    fallbackCopy();
+  }
+}
+
+
+async function dlJson() {
+  const txt = document.getElementById('jsTxt').value;
+  const btn = document.getElementById('btnDl');
+  const fileName = 'pipbuck_character.json';
+
+  try {
+    const file = new File([txt], fileName, { type: 'application/json' });
+
+    // Если открыто на телефоне или во встроенном браузере, где блокируются обычные загрузки,
+    // вызываем системное меню «Поделиться / Сохранить в Файлы»
+    if (navigator.canShare && navigator.canShare({ files: [file] }) && /Android|iPhone|iPad/i.test(navigator.userAgent)) {
+      await navigator.share({
+        files: [file],
+        title: 'Данные Голодиска PIP-BUCK'
+      });
+    } else {
+      // Стандартное скачивание для ПК и обычных браузеров
+      const blob = new Blob([txt], { type: 'application/json;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.style.display = 'none';
+      a.href = url;
+      a.download = fileName;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 2000);
+    }
+
+    if (btn) {
+      btn.textContent = '[ ГОТОВО! ]';
+      setTimeout(() => btn.textContent = '[ СКАЧАТЬ ]', 1500);
+    }
+  } catch (e) {
+    // Если пользователь отменил меню «Поделиться» или сработала защита песочницы
+    if (btn) {
+      btn.textContent = '[ СКАЧАТЬ ]';
+    }
+  }
+}
+
+function sanitizeState(raw) {
+  const clean = def();
+  if (!raw || typeof raw !== 'object') return clean;
+ const isOkArt = v => {
+  if (typeof v !== 'string') return false;
+  if (v.startsWith('emo:') || /^data:image\/(png|jpeg|webp|gif);base64,/i.test(v)) return true;
+  try {
+    const u = new URL(v);
+    if (u.protocol !== 'https:' && u.protocol !== 'http:') return false;
+    return !/^(localhost|0\.0\.0\.0|\[::1\]|127\.|10\.|192\.168\.|172\.(1[6-9]|2\d|30|31)\.)/i.test(u.hostname) && !u.hostname.endsWith('.local');
+  } catch (e) { return false; }
+};
+ 
+  clean.art = isOkArt(raw.art) ? raw.art : '';
+  clean.notes = typeof raw.notes === 'string' ? raw.notes : '';
+  clean.base = (typeof raw.base === 'string' || typeof raw.base === 'number') ? String(raw.base) : '';
+  clean.theme = Number.isInteger(raw.theme) ? raw.theme : 0;
+  clean.caseStyle = Number.isInteger(raw.caseStyle) ? raw.caseStyle : 0;
+
+  if (raw.bio && typeof raw.bio === 'object') {
+    BIO.forEach(b => {
+      const it = raw.bio[b.k];
+      if (it && typeof it === 'object') clean.bio[b.k] = { v: String(it.v || ''), d: String(it.d || ''), a: isOkArt(it.a) ? it.a : '' };
+    });
+  }
+  if (raw.mtr && typeof raw.mtr === 'object') {
+    MTR.forEach(m => {
+      const it = raw.mtr[m.k];
+      if (it && typeof it === 'object') clean.mtr[m.k] = { v: String(it.v || ''), c: Number(it.c) || 0, max: Number(it.max) || 5, d: String(it.d || ''), a: isOkArt(it.a) ? it.a : '' };
+    });
+  }
+  if (raw.tags && typeof raw.tags === 'object') {
+    ['st', 'ch', 'eq'].forEach(k => {
+      if (Array.isArray(raw.tags[k])) {
+        clean.tags[k] = raw.tags[k].filter(t => t && typeof t === 'object' && t.n).map(t => ({
+          n: String(t.n), d: String(t.d || ''), a: isOkArt(t.a) ? t.a : ''
+        }));
+      }
+    });
+  }
+  if (raw.skl && typeof raw.skl === 'object') {
+    SKL.forEach(s => { if (raw.skl[s.k] !== undefined) clean.skl[s.k] = String(raw.skl[s.k]); });
+  }
+  if (raw.lk && typeof raw.lk === 'object') {
+    ['art', 'tag', 'not', 'rst'].forEach(k => clean.lk[k] = !!raw.lk[k]);
+  }
+  if (raw.layout && Array.isArray(raw.layout.left) && Array.isArray(raw.layout.right)) {
+    const validIds = ['profile', 'skills', 'meters', 'tags', 'notes'];
+    clean.layout = {
+      left: raw.layout.left.filter(id => validIds.includes(id)),
+      right: raw.layout.right.filter(id => validIds.includes(id))
+    };
+  }
+  if (raw.labels && typeof raw.labels === 'object') {
+    ['blk', 'bio', 'skl', 'mtr', 'tgr', 'ui'].forEach(cat => {
+      if (raw.labels[cat] && typeof raw.labels[cat] === 'object') {
+        Object.keys(raw.labels[cat]).forEach(k => {
+          if (k !== '__proto__' && typeof raw.labels[cat][k] === 'string') clean.labels[cat][k] = raw.labels[cat][k];
+        });
+      }
+    });
+  }
+  return clean;
+}
+
+function ldJson() {
+  const b = document.getElementById('btnLd');
+  try {
+    st = sanitizeState(JSON.parse(document.getElementById('jsTxt').value));
+    applyTheme(); applyCase(); save(); draw();
+    closeJson();
+  } catch (e) {
+    b.textContent = '[ ОШИБКА! ]';
+    setTimeout(() => b.textContent = '[ ПРИМЕНИТЬ ]', 2000);
+  }
+}
+
+function importFile(e) {
+  const f = e.target.files && e.target.files[0] ? e.target.files[0] : null;
+  if (!f) return;
+  const r = new FileReader();
+  r.onload = ev => {
+    try {
+      st = sanitizeState(JSON.parse(ev.target.result));
+      applyTheme(); applyCase(); save(); draw();
+      closeJson();
+    } catch (err) {}
+  };
+  r.readAsText(f);
+  e.target.value = '';
+}
+
+function doReset() {
+  if (st.lk.rst) return;
+  const b = document.getElementById('btn-rst');
+  if (b.dataset.c !== '1') {
+    b.dataset.c = '1'; b.className = 'hw-btn warn'; b.textContent = 'ТОЧНО?'; clearTimeout(rstT);
+    rstT = setTimeout(() => { b.dataset.c = ''; b.className = 'hw-btn danger'; b.textContent = 'СБРОС'; }, 4000);
+    return;
+  }
+  clearTimeout(rstT); b.dataset.c = ''; b.className = 'hw-btn danger'; b.textContent = 'СБРОС';
+  
+  // Запоминаем текущий стиль корпуса и цвет экрана перед сбросом анкеты
+  const savedCase = st.caseStyle || 0;
+  const savedTheme = st.theme || 0;
+  
+  st = def();
+  st.caseStyle = savedCase;
+  st.theme = savedTheme;
+  
+    save();
+  applyTheme();
+  applyCase();
+  draw();
+}
+
+applyTheme();
+applyCase();
+draw();
+try {
+  const r = localStorage.getItem('pb_os_v27');
+  if (r) { st = sanitizeState(JSON.parse(r)); applyTheme(); applyCase(); draw(); }
+} catch (e) {}
+
+// Автоматическое сжатие картинок с сохранением прозрачности для PNG/WebP
+upImg = function(e, cb) {
+  const f = e.target.files && e.target.files[0] ? e.target.files[0] : null;
+  if (!f) return;
+  const isTransparent = f.type === 'image/png' || f.type === 'image/webp';
+  const r = new FileReader();
+  r.onload = ev => {
+    const img = new Image();
+    img.onload = () => {
+      const maxW = 600;
+      const scale = Math.min(1, maxW / img.width);
+      const canvas = document.createElement('canvas');
+      canvas.width = Math.round(img.width * scale);
+      canvas.height = Math.round(img.height * scale);
+      canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+      cb(isTransparent ? canvas.toDataURL('image/webp', 0.85) : canvas.toDataURL('image/jpeg', 0.82));
+    };
+    img.src = ev.target.result;
+  };
+  r.readAsDataURL(f);
+  e.target.value = '';
+};
+// === АВТОНОМНЫЙ ЗВУКОВОЙ МОДУЛЬ (WEB AUDIO API) ===
+const PipAudio = (() => {
+  let ctx = null;
+  function init() {
+    if (!ctx) {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (AudioCtx) ctx = new AudioCtx();
+    }
+    if (ctx && ctx.state === 'suspended') ctx.resume();
+  }
+
+  // Короткий механический щелчок (тумблеры, кнопки, колесо)
+  function click(freq = 600, dur = 0.03, vol = 0.08) {
+    init();
+    if (!ctx) return;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(freq, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(120, ctx.currentTime + dur);
+    gain.gain.setValueAtTime(vol, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + dur);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start();
+    osc.stop(ctx.currentTime + dur);
+  }
+
+  // Звук загрузки при включении питания
+  function boot() {
+    init();
+    if (!ctx) return;
+    [320, 480, 760].forEach((f, i) => {
+      setTimeout(() => click(f, 0.08, 0.06), i * 140);
+    });
+  }
+
+  return { click, boot };
+})();
+
+// 1. Озвучиваем все кнопки при нажатии
+document.addEventListener('pointerdown', e => {
+  const btn = e.target.closest('button, .rotary-mini, .rust-plate, .pip, .pill');
+  if (!btn) return;
+  if (btn.id === 'mechPwrBtn' && !screenOn) {
+    PipAudio.boot();
+  } else if (btn.classList.contains('rotary-mini') || btn.classList.contains('rust-plate')) {
+    PipAudio.click(850, 0.04, 0.1);
+  } else {
+    PipAudio.click(520, 0.025, 0.07);
+  }
+}, { passive: true });
+
+// 2. Тихий треск при вращении колеса прокрутки
+let lastTickY = 0;
+document.getElementById('screenContent')?.addEventListener('scroll', e => {
+  const cur = e.target.scrollTop;
+  if (Math.abs(cur - lastTickY) > 28) {
+    PipAudio.click(950, 0.012, 0.025);
+    lastTickY = cur;
+  }
+}, { passive: true });
+// === ДЕТЕКТОР ПЕРЕГРУЗКИ + ЗВУК СЧЁТЧИКА ГЕЙГЕРА И ЭЛТ-ПОМЕХ ===
+(() => {
+  let stress = 0;
+  let glitchActive = false;
+  let glitchTimer = null;
+  let geigerTimer = null;
+  let audioCtx = null;
+
+  // Генератор короткого сухого щелчка счётчика Гейгера (белый шум 8 мс)
+  function geigerTick() {
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    if (!AudioCtx) return;
+    if (!audioCtx) audioCtx = new AudioCtx();
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+
+    const bufSize = Math.floor(audioCtx.sampleRate * 0.008);
+    const buffer = audioCtx.createBuffer(1, bufSize, audioCtx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufSize; i++) {
+      data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufSize * 0.3));
+    }
+
+    const noise = audioCtx.createBufferSource();
+    noise.buffer = buffer;
+
+    const filter = audioCtx.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.frequency.value = 1800 + Math.random() * 1400;
+
+    const gain = audioCtx.createGain();
+    gain.gain.value = 0.22;
+
+    noise.connect(filter);
+    filter.connect(gain);
+    gain.connect(audioCtx.destination);
+    noise.start();
+  }
+
+  // Хаотичная трещотка радиации на время сбоя
+  function startGeigerBurst() {
+    stopGeigerBurst();
+    const loop = () => {
+      if (!glitchActive) return;
+      geigerTick();
+      // Случайные интервалы от 15 до 110 мс — как настоящий счётчик Гейгера
+      geigerTimer = setTimeout(loop, 15 + Math.random() * 95);
+    };
+    loop();
+  }
+
+  function stopGeigerBurst() {
+    clearTimeout(geigerTimer);
+    geigerTimer = null;
+  }
+
+  function triggerGlitch() {
+    if (glitchActive || !screenOn || booting) return;
+    glitchActive = true;
+    const scr = document.getElementById('crtScreen');
+    if (scr) scr.classList.add('glitch-mode');
+    startGeigerBurst();
+
+    clearTimeout(glitchTimer);
+    glitchTimer = setTimeout(stopGlitch, 4000);
+  }
+
+  function stopGlitch() {
+    clearTimeout(glitchTimer);
+    stopGeigerBurst();
+    document.getElementById('crtScreen')?.classList.remove('glitch-mode');
+    glitchActive = false;
+    stress = 0;
+  }
+
+  // 1. Быстрые клики по экрану (спам)
+document.getElementById('crtScreen')?.addEventListener('pointerdown', () => {
+  if (!screenOn || booting || glitchActive) return;
+  stress += 2.0;
+  if (stress >= 30) triggerGlitch();
+}, { passive: true });
+
+  // 2. Быстрый набор текста
+  document.addEventListener('keydown', e => {
+    if (!screenOn || booting || glitchActive || e.repeat) return;
+    stress += 1.5;
+    if (stress >= 40) triggerGlitch();
+  }, { passive: true });
+
+  // 3. Удар по корпусу (клик по металлической рамке или винтам вокруг экрана) чинит сбой
+  document.querySelector('.pb-case')?.addEventListener('pointerdown', e => {
+    if (glitchActive && !e.target.closest('.crt-screen')) {
+      stopGlitch();
+      if (typeof PipAudio !== 'undefined') PipAudio.click(260, 0.06, 0.16);
+    }
+  }, { passive: true });
+
+  // Остывание в покое
+  setInterval(() => {
+    if (!glitchActive && stress > 0) stress = Math.max(0, stress - 1.5);
+  }, 500);
+})();
+let artPickTarget = 'main';
+const PIP_EMOS = ['☢️','⚡','🔥','💀','🛡️','⚔️','🔫','💣','💉','💊','🧪','🧬','🩺','❤️','💔','🧠','👁️','🦾','🦿','🤖','👾','👽','👻','🦊','🐺','🐴','🦄','🐉','🐾','🍀','🍄','🌵','🌲','🌙','☀️','⭐','❄️','💧','⚙️','🔧','🔨','🔋','📡','💾','📼','📻','🧭','🗺️','🎒','📦','🔑','🔒','🔓','📜','📋','📌','⚠️','⛔','✅','❌','🎲','🎯','🏆','👑','💎','💰','🍺','🍖','☕','🚬'];
+
+function openArtPick(target) {
+  artPickTarget = target;
+  document.getElementById('artUrlInp').value = '';
+  document.getElementById('customEmoInp').value = '';
+  document.getElementById('artUrlErr').style.display = 'none';
+  const grid = document.getElementById('emoGrid');
+  if (!grid.children.length) {
+    PIP_EMOS.forEach(em => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.textContent = em;
+      btn.style.cssText = 'font-size:1.3rem;padding:2px;cursor:pointer;border:none;background:transparent;';
+      btn.onclick = () => selectArtValue('emo:' + em, em);
+      grid.appendChild(btn);
+    });
+  }
+  document.getElementById('tabBtn-file').style.display = (target === 'lbl') ? 'none' : 'block';
+  document.getElementById('tabBtn-url').style.display = (target === 'lbl') ? 'none' : 'block';
+  switchArtTab(target === 'lbl' ? 'emo' : 'file');
+  document.getElementById('artPickMdl').style.display = 'flex';
+}
+
+
+function switchArtTab(tab) {
+  ['file','url','emo'].forEach(t => {
+    document.getElementById('artTab-' + t).style.display = (t === tab) ? 'block' : 'none';
+    document.getElementById('tabBtn-' + t).style.opacity = (t === tab) ? '1' : '0.5';
+  });
+}
+
+function handleUniversalFile(e) { upImg(e, r => { selectArtValue(r); }); }
+
+
+let urlProbeToken = 0;
+
+function closeArtPick() {
+  urlProbeToken++; // Отменяем старую загрузку при закрытии окна
+  document.getElementById('artPickMdl').style.display = 'none';
+}
+
+function applyCustomEmo() {
+  const raw = document.getElementById('customEmoInp').value.trim();
+  if (!raw) return;
+  // Берём не больше 4 символов (хватает даже для составных эмодзи вроде 👨‍🚀, но не сломает верстку)
+  const val = Array.from(raw).slice(0, 4).join('');
+  selectArtValue('emo:' + val, val);
+}
+
+function applySafeArtUrl() {
+  const raw = document.getElementById('artUrlInp').value.trim();
+  const err = document.getElementById('artUrlErr');
+  err.style.display = 'none';
+  try {
+    const u = new URL(raw);
+    if (u.protocol !== 'https:' && u.protocol !== 'http:') throw new Error('Нужна ссылка http:// или https://');
+if (/^(localhost|0\.0\.0\.0|\[::1\]|127\.|10\.|192\.168\.|172\.(1[6-9]|2\d|30|31)\.)/i.test(u.hostname) || u.hostname.endsWith('.local')) {
+  throw new Error('Локальные адреса запрещены.');
+}
+
+    const token = ++urlProbeToken;
+    err.style.color = 'var(--amb)';
+    err.textContent = 'Проверка картинки...';
+    err.style.display = 'block';
+    const probe = new Image();
+    probe.referrerPolicy = 'no-referrer';
+    probe.onload = () => {
+      if (token !== urlProbeToken) return; // Игнорируем, если окно уже закрыли
+      err.style.display = 'none';
+      selectArtValue(u.href);
+    };
+    probe.onerror = () => {
+      if (token !== urlProbeToken) return;
+      err.style.color = 'var(--red)';
+      err.textContent = 'Не удалось загрузить картинку по этой ссылке.';
+    };
+    probe.src = u.href;
+  } catch (ex) {
+    err.style.color = 'var(--red)';
+    err.textContent = ex.message || 'Некорректная ссылка.';
+    err.style.display = 'block';
+  }
+}
+
+
+function selectArtValue(val, rawEmo) {
+  if (artPickTarget === 'lbl') {
+    const inp = document.getElementById('lblInp');
+    inp.value = (rawEmo || '') + ' ' + inp.value.trim();
+    closeArtPick();
+    return;
+  }
+  if (artPickTarget === 'main') { st.art = val; save(); draw(); }
+  else if (artPickTarget === 'ed' && ed) { ed.a = val; updEdImg(); }
+  closeArtPick();
+}
+
+</script>
+
+
+
+</body>
+</html>
